@@ -30,7 +30,7 @@ Copy-Item .env.example .env.local
 pnpm dev
 ```
 
-Acesse `http://localhost:3000`. A agenda demonstrativa está em `/p/dra-isadora-bezerra`.
+Acesse `http://localhost:3000`. A agenda demonstrativa está em `/p/dra-isadora-bezerra` e o estado real da entrega está em `/projeto`.
 
 Para o banco local:
 
@@ -49,11 +49,14 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:e2e
+pnpm sites:build
 ```
+
+O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório.
 
 ## Regras de produção
 
-- Separe os projetos Vercel e Supabase de teste e produção.
+- Separe a hospedagem da interface e os projetos Supabase de teste e produção.
 - Configure os modos de pagamento e WhatsApp explicitamente; produção nunca faz fallback para simulação.
 - Cadastre os webhooks em `/api/webhooks/mercadopago` e `/api/webhooks/whatsapp`.
 - Acione `/api/internal/process-notifications` apenas com `Authorization: Bearer <CRON_SECRET>`.
@@ -70,6 +73,7 @@ pnpm test:e2e
 - `supabase/migrations`: schema, funções transacionais e RLS.
 - `supabase/functions`: trabalho agendado.
 - `e2e`: testes da jornada pública e responsividade.
+- `.openai/hosting.json` e `vite.config.ts`: empacotamento e vínculo com OpenAI Sites.
 
 ## Documentação
 

@@ -2,13 +2,15 @@
 
 ## Ambientes
 
-Use projetos independentes: desenvolvimento local, Vercel Preview + Supabase de teste, e produção. Nunca compartilhe service role, webhook secret ou tokens entre ambientes.
+Use projetos independentes: desenvolvimento local, OpenAI Sites para a interface demonstrativa, Supabase de teste e produção. Nunca compartilhe service role, webhook secret ou tokens entre ambientes.
+
+O deployment atual no Sites apresenta a demonstração com dados fictícios e o plano em `/projeto`. Ele não transforma provedores fake em integrações reais. Operações persistentes exigem variáveis autorizadas e um projeto Supabase compatível.
 
 ## Promoção
 
 1. Validar `pnpm check`.
 2. Recriar um banco temporário com todas as migrações.
-3. Implantar preview e executar `pnpm test:e2e`.
+3. Validar `pnpm sites:build`, salvar a versão no Sites e executar o smoke test remoto.
 4. Confirmar modos e segredos de integração.
 5. Fazer backup do banco produtivo.
 6. Aplicar somente migrações compatíveis.
@@ -25,7 +27,7 @@ Use projetos independentes: desenvolvimento local, Vercel Preview + Supabase de 
 
 ## Rollback
 
-- Reverter a implantação da aplicação para o release anterior na Vercel.
+- Reverter a implantação da aplicação para a versão anterior salva no Sites.
 - Não reverter migrações destrutivas automaticamente.
 - Para schema incompatível, restaurar o backup em projeto isolado, validar integridade e só então promover.
 - Manter webhooks respondendo 200 para eventos já registrados durante a recuperação.
