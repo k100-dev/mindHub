@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { PageHeading } from "@/components/page-heading";
+import { StatusBadge } from "@/components/status-badge";
+import { demoPatients } from "@/lib/demo-data";
+
+export default function PatientsPage() {
+  return <><PageHeading title="Pacientes" description="Cadastros e histórico administrativo vinculados à sua conta." action={<Link href="/app/pacientes/novo" className="button-primary">+ Novo paciente</Link>} /><section className="card overflow-hidden"><div className="flex flex-col gap-3 border-b border-[#e5ebee] p-4 sm:flex-row"><label className="relative flex-1"><Search size={18} className="absolute left-3 top-3.5 text-slate-400" /><input className="field !pl-10" placeholder="Buscar por nome, telefone ou e-mail" aria-label="Buscar pacientes" /></label><select className="field sm:w-44" aria-label="Filtrar status"><option>Todos</option><option>Ativos</option><option>Inativos</option></select></div><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-[#f6f8f9] text-xs uppercase tracking-wide text-[#6b7a8e]"><tr><th className="p-4">Paciente</th><th className="p-4">Contato</th><th className="p-4">Consultas</th><th className="p-4">Status</th><th className="p-4 text-right">Ação</th></tr></thead><tbody className="divide-y divide-[#e9eef0]">{demoPatients.map((patient) => <tr key={patient.id} className="hover:bg-[#f9fbfb]"><td className="p-4 font-extrabold">{patient.name}</td><td className="p-4"><p>{patient.email}</p><p className="muted mt-1">{patient.phone}</p></td><td className="p-4">{patient.appointments}</td><td className="p-4"><StatusBadge status={patient.status} /></td><td className="p-4 text-right"><Link href={`/app/pacientes/${patient.id}`} className="font-extrabold text-[#117f72]">Ver perfil</Link></td></tr>)}</tbody></table></div></section></>;
+}

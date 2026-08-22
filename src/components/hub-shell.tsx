@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { Brand } from "@/components/brand";
+export function HubShell({ children }: { children: React.ReactNode }) { return <div className="min-h-screen"><header className="border-b border-[#e1e8eb] bg-white"><div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5"><Brand /><nav className="flex gap-5 text-sm font-extrabold"><Link href="/hub">Início</Link><Link href="/hub/agendamentos">Agendamentos</Link><Link href="/hub/perfil" className="hidden sm:block">Perfil</Link></nav></div></header><main className="mx-auto max-w-6xl px-5 py-9">{children}</main></div>; }

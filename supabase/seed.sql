@@ -1,0 +1,3 @@
+-- Dados exclusivamente fictícios para desenvolvimento.
+-- Usuários de autenticação devem ser criados pelo Supabase Auth; este arquivo
+-- permanece intencionalmente sem dados pessoais ou clínicos.

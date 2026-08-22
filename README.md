@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MindHub
 
-## Getting Started
+Aplicação web para gestão administrativa de pacientes, agenda, sinal de consulta e lembretes de uma psicóloga. O MVP é um monólito modular em Next.js, com PostgreSQL/Auth no Supabase, Checkout Pro do Mercado Pago e WhatsApp Cloud API.
 
-First, run the development server:
+> O MindHub não é prontuário. Não registre diagnósticos, evolução clínica, prescrições ou outros dados sensíveis de saúde.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+## Estado implementado
+
+- Interface pública, portal da psicóloga e hub do paciente responsivos.
+- Cadastro, login, confirmação de e-mail e recuperação de senha via Supabase Auth.
+- Ativação profissional controlada por `PSYCHOLOGIST_ALLOWLIST`.
+- Schema PostgreSQL completo, RLS, auditoria, histórico de estados e migração reproduzível.
+- Disponibilidade recorrente, bloqueios, agenda e slots públicos.
+- Reserva temporária transacional com restrição anti-double-booking no banco.
+- Checkout Pro com modos `fake`, `sandbox` e `production`.
+- Webhooks autenticados e idempotentes; retorno do navegador não confirma pagamento.
+- Adaptador WhatsApp e processamento de notificações com retry.
+- APIs de pacientes, agenda, acompanhamento e relatórios básicos.
+- Testes unitários, smoke E2E, lint, tipos e build em CI.
+
+As páginas usam dados fictícios para permitir demonstração visual sem credenciais. Operações persistentes informam quando o Supabase ainda não está configurado.
+
+## Executar localmente
+
+Requisitos: Node.js 20+, pnpm e, para persistência, Supabase CLI/Docker.
+
+```powershell
+pnpm install
+Copy-Item .env.example .env.local
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse `http://localhost:3000`. A agenda demonstrativa está em `/p/dra-isadora-bezerra`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para o banco local:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+supabase start
+supabase db reset
+```
 
-## Learn More
+Copie as chaves retornadas pelo Supabase para `.env.local`. Nunca versione `.env.local`.
 
-To learn more about Next.js, take a look at the following resources:
+## Qualidade
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```powershell
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm test:e2e
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Regras de produção
 
-## Deploy on Vercel
+- Separe os projetos Vercel e Supabase de teste e produção.
+- Configure os modos de pagamento e WhatsApp explicitamente; produção nunca faz fallback para simulação.
+- Cadastre os webhooks em `/api/webhooks/mercadopago` e `/api/webhooks/whatsapp`.
+- Acione `/api/internal/process-notifications` apenas com `Authorization: Bearer <CRON_SECRET>`.
+- Faça backup e teste rollback antes de migração destrutiva.
+- Use somente dados fictícios até revisão formal de segurança, LGPD, retenção e consentimento.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estrutura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app`: páginas e APIs.
+- `src/components`: componentes visuais e formulários.
+- `src/lib/domain`: regras puras do domínio.
+- `src/lib/integrations`: adaptadores externos.
+- `src/lib/supabase`: clientes e sessão.
+- `supabase/migrations`: schema, funções transacionais e RLS.
+- `supabase/functions`: trabalho agendado.
+- `e2e`: testes da jornada pública e responsividade.
+
+## Documentação
+
+- [Arquitetura](docs/ARQUITETURA.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Rastreabilidade](docs/RASTREABILIDADE.md)
+- [Implantação e rollback](docs/DEPLOYMENT.md)
+- [Reconciliação inicial](docs/REC-01-RECONCILIACAO.md)
+- [Política de segurança](SECURITY.md)
+- [Como contribuir](CONTRIBUTING.md)
+
+## Decisões pendentes antes do lançamento real
+
+- Prazo final de reserva, cancelamento e remarcação.
+- Política jurídica de retenção, anonimização e exclusão.
+- Consentimento e templates aprovados do WhatsApp.
+- Credenciais produtivas e plano de backup.
+- Numeração acadêmica oficial de UC03/UC04.

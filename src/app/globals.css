@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #17233c;
+  --muted: #66758d;
+  --line: #dfe6eb;
+  --surface: #ffffff;
+  --canvas: #f4f7f8;
+  --brand: #117f72;
+  --brand-dark: #0b5f57;
+  --brand-soft: #e7f5f2;
+  --accent: #e7a23b;
+  --danger: #d45353;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+* { box-sizing: border-box; }
+html { background: var(--canvas); }
+body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--brand) 35%, white); outline-offset: 2px; }
+.card { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; box-shadow: 0 12px 40px rgba(24, 51, 67, 0.06); }
+.field { width: 100%; min-height: 46px; border: 1px solid #ccd8df; border-radius: 11px; background: #fff; padding: 0 14px; color: var(--ink); }
+.field:focus { border-color: var(--brand); outline: 3px solid #dff3ef; }
+.button-primary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 11px; background: var(--brand); color: white; padding: 0 18px; font-weight: 700; cursor: pointer; transition: 160ms ease; }
+.button-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
+.button-primary:disabled { cursor: not-allowed; opacity: .6; transform: none; }
+.button-secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; border: 1px solid #cbd8de; border-radius: 11px; background: white; color: var(--ink); padding: 0 18px; font-weight: 700; cursor: pointer; }
+.eyebrow { color: var(--brand); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.muted { color: var(--muted); }
+@media (max-width: 720px) { .card { border-radius: 14px; } }

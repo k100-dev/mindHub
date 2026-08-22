@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { PageHeading } from "@/components/page-heading";
+import { StatusBadge } from "@/components/status-badge";
+export default function PatientAppointmentsPage() { const items=[['a1','25/08/2026','14:00','CONFIRMADO'],['a0','18/08/2026','14:00','REALIZADO'],['a9','11/08/2026','10:00','CANCELADO']]; return <><PageHeading title="Meus agendamentos" description="Próximos horários e histórico administrativo." /><div className="grid gap-4">{items.map(([id,date,time,status]) => <Link key={id} href={`/hub/agendamentos/${id}`} className="card flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center"><div><p className="text-lg font-extrabold">Dra. Isadora Bezerra</p><p className="muted mt-1 text-sm">{date} às {time}</p></div><StatusBadge status={status} /></Link>)}</div></>; }

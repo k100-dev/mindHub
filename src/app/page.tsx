@@ -1,69 +1,40 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, CalendarCheck, CheckCircle2, LockKeyhole, MessageCircleMore } from "lucide-react";
+import { Brand } from "@/components/brand";
+
+const benefits = [
+  { icon: CalendarCheck, title: "Agenda sem conflitos", text: "Disponibilidades, bloqueios e reservas protegidas contra agendamento duplo." },
+  { icon: MessageCircleMore, title: "Lembretes automáticos", text: "Confirmações e lembretes pelo WhatsApp sem depender de mensagens manuais." },
+  { icon: LockKeyhole, title: "Privacidade desde o início", text: "Dados administrativos protegidos por vínculo, autenticação e rastreabilidade." },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_15%_15%,#d9faf2_0,transparent_32%),linear-gradient(145deg,#f8fbfb,#eef3f4)]">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <Brand />
+        <div className="flex items-center gap-3"><Link href="/entrar" className="button-secondary">Entrar</Link><Link href="/cadastro/paciente" className="button-primary hidden sm:inline-flex">Criar conta</Link></div>
+      </nav>
+      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-20 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:pt-20">
+        <div>
+          <p className="eyebrow">Cuidado começa com organização</p>
+          <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[1.06] tracking-[-.04em] text-[#142139] md:text-7xl">Sua agenda leve. Seu atendimento no centro.</h1>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-[#607087]">O MindHub reúne pacientes, horários, sinal e lembretes em um fluxo simples para a psicóloga e acolhedor para o paciente.</p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/p/dra-isadora-bezerra" className="button-primary min-w-48">Agendar consulta <ArrowRight size={18} /></Link><Link href="/cadastro/psicologa" className="button-secondary min-w-48">Sou psicóloga</Link></div>
+          <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-[#516378]">
+            {['Horários em tempo real', 'Pagamento de sinal seguro', 'Sem prontuário clínico'].map((item) => <span key={item} className="inline-flex items-center gap-2"><CheckCircle2 size={17} className="text-[#117f72]" />{item}</span>)}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="relative mx-auto w-full max-w-xl">
+          <div className="absolute -inset-5 -z-0 rounded-[36px] bg-gradient-to-br from-[#117f72]/20 to-[#66d7c4]/10 blur-2xl" />
+          <div className="card relative overflow-hidden p-5 md:p-7">
+            <div className="flex items-center justify-between border-b border-[#e4ebee] pb-5"><div><p className="text-sm font-bold">Próxima consulta</p><p className="muted mt-1 text-sm">Terça-feira, 25 de agosto</p></div><span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-800">Confirmado</span></div>
+            <div className="grid gap-3 py-5 sm:grid-cols-3"><div className="rounded-xl bg-[#f3f7f7] p-4"><p className="muted text-xs">Horário</p><p className="mt-1 text-lg font-black">14:00</p></div><div className="rounded-xl bg-[#f3f7f7] p-4"><p className="muted text-xs">Duração</p><p className="mt-1 text-lg font-black">60 min</p></div><div className="rounded-xl bg-[#eaf7f4] p-4"><p className="text-xs text-[#117f72]">Lembrete</p><p className="mt-1 text-lg font-black text-[#0d6d62]">Ativo</p></div></div>
+            <div className="rounded-2xl bg-[#0e6e63] p-6 text-white"><p className="text-sm text-white/70">Agenda da semana</p><div className="mt-5 grid grid-cols-5 gap-2 text-center text-xs">{['SEG', 'TER', 'QUA', 'QUI', 'SEX'].map((day, index) => <div key={day}><p className="text-white/60">{day}</p><div className={index === 1 ? "mx-auto mt-2 grid size-10 place-items-center rounded-xl bg-white font-black text-[#0e6e63]" : "mx-auto mt-2 grid size-10 place-items-center rounded-xl bg-white/10 font-bold"}>{24 + index}</div></div>)}</div></div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+      <section className="mx-auto grid max-w-7xl gap-5 px-6 pb-20 md:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <article key={title} className="card p-6"><span className="grid size-11 place-items-center rounded-xl bg-[#e9f6f3] text-[#117f72]"><Icon size={22} /></span><h2 className="mt-5 text-lg font-extrabold">{title}</h2><p className="muted mt-2 leading-6">{text}</p></article>)}</section>
+    </main>
   );
 }
