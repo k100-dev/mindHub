@@ -33,10 +33,16 @@ describe("regras de agendamento", () => {
   });
 
   it("remove horários ocupados ao gerar slots", () => {
-    const date = new Date("2026-08-24T12:00:00Z");
+    const date = new Date(2026, 7, 24);
+    const busyStart = new Date(date);
+    busyStart.setHours(10, 0, 0, 0);
+    const busyEnd = new Date(date);
+    busyEnd.setHours(11, 0, 0, 0);
+    const now = new Date(date);
+    now.setDate(now.getDate() - 1);
     const busy = [{
-      start: new Date("2026-08-24T14:00:00Z"),
-      end: new Date("2026-08-24T15:00:00Z"),
+      start: busyStart,
+      end: busyEnd,
     }];
     const slots = generateSlots({
       date,
@@ -44,7 +50,7 @@ describe("regras de agendamento", () => {
       endHour: 12,
       durationMinutes: 60,
       busy,
-      now: new Date("2026-08-23T00:00:00Z"),
+      now,
     });
     expect(slots.length).toBe(2);
   });
