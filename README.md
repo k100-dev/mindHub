@@ -76,6 +76,7 @@ pnpm test:e2e
 - [Arquitetura](docs/ARQUITETURA.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Plano de ação concentrado](docs/PLANO-DE-ACAO-CONCENTRADO.md)
+- [Matriz de entregáveis do estágio](docs/MATRIZ-DE-ENTREGAVEIS-DO-ESTAGIO.md)
 - [Rastreabilidade](docs/RASTREABILIDADE.md)
 - [Implantação e rollback](docs/DEPLOYMENT.md)
 - [Reconciliação inicial](docs/REC-01-RECONCILIACAO.md)
