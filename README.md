@@ -22,7 +22,7 @@ As páginas usam dados fictícios para permitir demonstração visual sem creden
 
 ## Executar localmente
 
-Requisitos: Node.js 20+, pnpm e, para persistência, Supabase CLI/Docker.
+Requisitos: Node.js 24+, pnpm e, para persistência, Supabase CLI/Docker.
 
 ```powershell
 pnpm install
