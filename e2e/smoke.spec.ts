@@ -21,3 +21,28 @@ test("painel do projeto apresenta os gates reais do MVP", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /supabase funcional/i })).toBeVisible();
   await expect(page.getByText(/ainda não é produção/i)).toBeVisible();
 });
+
+test("UC01 e UC02 funcionam no modo demonstrativo", async ({ page }) => {
+  await page.goto("/app/pacientes");
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.getByRole("link", { name: /novo paciente/i }).click();
+  await page.getByLabel(/nome completo/i).fill("Paciente de Teste");
+  await page.getByLabel(/^e-mail$/i).fill("paciente.teste@example.com");
+  await page.getByLabel(/whatsapp/i).fill("+55 43 99999-0000");
+  await page.getByRole("button", { name: /salvar paciente/i }).click();
+  await expect(page.getByText("Paciente de Teste")).toBeVisible();
+
+  await page.goto("/app/agenda");
+  await page.getByLabel("Paciente").selectOption({ label: "Paciente de Teste" });
+  await page.getByLabel("Data").fill("2026-09-04");
+  await page.getByLabel("Horário").fill("16:00");
+  await page.getByRole("button", { name: /criar agendamento/i }).click();
+  await expect(page.getByRole("status")).toContainText(/agendamento criado/i);
+
+  await page.getByLabel("Paciente").selectOption({ label: "Paciente de Teste" });
+  await page.getByLabel("Data").fill("2026-09-04");
+  await page.getByLabel("Horário").fill("16:00");
+  await page.getByRole("button", { name: /criar agendamento/i }).click();
+  await expect(page.getByRole("status")).toContainText(/conflito/i);
+});

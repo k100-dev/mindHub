@@ -10,13 +10,13 @@ Este plano prioriza somente o que prova essa jornada. Recursos intermediários o
 
 | Frente | Estado atual | Lacuna essencial |
 |---|---|---|
-| Interface | Páginas públicas, painel e hub responsivos | Parte das telas ainda usa dados fictícios |
+| Interface | Páginas públicas, painel e hub responsivos; UC01/UC02 funcionais em modo demonstrativo | Conectar as telas críticas ao Supabase para o gate de produção |
 | Banco | Migração, RLS e funções SQL versionadas | Migração ainda não executada contra Supabase local/teste |
 | Autenticação | Fluxos e guards implementados | Falta validar e-mail, convite e recuperação com projeto real |
-| Agenda | Regras, bloqueios, slots e reserva implementados | Falta integração E2E com banco e teste concorrente real |
+| Agenda | Cadastro, visões dia/semana/mês, disponibilidade, bloqueios e prevenção de conflito demonstráveis | Falta integração E2E com banco e teste concorrente real |
 | Pagamento | Checkout e webhook implementados | Falta credencial sandbox e teste assinado real |
 | WhatsApp | Adaptador, webhook e retry implementados | Falta template/credencial e teste real ou sandbox aprovado |
-| Deploy | CI e runbook prontos | Falta Vercel Preview, Supabase de teste e smoke test remoto |
+| Deploy | OpenAI Sites/Cloudflare vinculado, build validado e publicação acadêmica disponível | Falta Supabase de teste e smoke autenticado remoto |
 
 ## Sequência crítica
 
@@ -105,7 +105,7 @@ Alternativa acadêmica se a Meta bloquear: executar o adaptador fake, mostrar o 
 
 Prazo sugerido: 4–6 horas.
 
-- Implantar Vercel Preview e conectar Supabase de teste.
+- Publicar uma nova versão no OpenAI Sites/Cloudflare e conectar o Supabase de teste.
 - Executar CI, E2E autenticado, acessibilidade por teclado e responsividade.
 - Revisar erros, vazios, datas, moeda e fuso.
 - Executar smoke test, backup e ensaio de rollback.

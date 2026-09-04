@@ -24,7 +24,7 @@ const foundations = [
   "34 rotas entre páginas e APIs",
   "Migração PostgreSQL, RLS e proteção contra conflito",
   "Autenticação e autorização por perfil",
-  "Agenda, pacientes e hub responsivos",
+  "UC01 e UC02 funcionais em modo demonstrativo",
   "Adaptadores de pagamento e WhatsApp isolados",
   "Testes unitários, E2E e integração contínua",
 ];
@@ -91,9 +91,10 @@ export default function ProjectPlanPage() {
 
       <section className="mx-auto max-w-7xl px-6 pb-10 pt-10 md:pt-16">
         <div className="max-w-4xl">
-          <p className="eyebrow">Plano concentrado · fonte atualizada em 22/08/2026</p>
+          <p className="eyebrow">Plano concentrado · fonte atualizada em 04/09/2026</p>
           <h1 className="mt-5 text-4xl font-black leading-tight tracking-[-.035em] text-[#142139] md:text-6xl">Do protótipo navegável ao MVP comprovado.</h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-[#607087]">Este painel traduz o plano versionado no repositório. A interface e a fundação técnica estão prontas para demonstração; integrações reais só serão consideradas concluídas após os gates abaixo.</p>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-[#607087]">Este painel traduz o plano versionado no repositório. Pacientes e agenda já podem ser demonstrados com dados fictícios persistidos no navegador; integrações reais só serão consideradas concluídas após os gates abaixo.</p>
+          <div className="mt-7 flex flex-wrap gap-3"><Link href="/app/pacientes" className="button-primary">Demonstrar UC01</Link><Link href="/app/agenda" className="button-secondary">Demonstrar UC02</Link></div>
         </div>
       </section>
 

@@ -17,8 +17,18 @@ Aplicação web para gestão administrativa de pacientes, agenda, sinal de consu
 - Adaptador WhatsApp e processamento de notificações com retry.
 - APIs de pacientes, agenda, acompanhamento e relatórios básicos.
 - Testes unitários, smoke E2E, lint, tipos e build em CI.
+- Gate acadêmico navegável de UC01 e UC02: pacientes podem ser cadastrados, buscados, inativados e reativados; agendamentos podem ser criados nas visões de dia, semana e mês, com bloqueio de conflito.
 
-As páginas usam dados fictícios para permitir demonstração visual sem credenciais. Operações persistentes informam quando o Supabase ainda não está configurado.
+Sem credenciais, UC01 e UC02 operam em **modo demonstrativo**, identificado na interface e persistido apenas no `localStorage` do navegador. Com Supabase configurado, os formulários e APIs usam a camada persistente. O modo demonstrativo comprova a jornada acadêmica, mas não equivale à prontidão de produção.
+
+## Roteiro rápido da banca
+
+1. Abra `/app/pacientes`, busque um cadastro e altere seu estado.
+2. Use `+ Novo paciente` para criar um registro fictício.
+3. Abra `/app/agenda`, alterne entre dia, semana e mês e crie um agendamento.
+4. Repita paciente, data e horário para demonstrar o bloqueio de conflito.
+5. Abra `/app/disponibilidade` para salvar a grade semanal e registrar um bloqueio.
+6. Use `/projeto` para apresentar a separação entre o gate acadêmico demonstrável e o gate de produção.
 
 ## Executar localmente
 
@@ -52,7 +62,7 @@ pnpm test:e2e
 pnpm sites:build
 ```
 
-O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório.
+O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório. A publicação acadêmica vigente é [mindhub-agenda.comercialeliarachave.chatgpt.site](https://mindhub-agenda.comercialeliarachave.chatgpt.site).
 
 ## Regras de produção
 

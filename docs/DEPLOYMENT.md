@@ -6,6 +6,10 @@ Use projetos independentes: desenvolvimento local, OpenAI Sites para a interface
 
 O deployment atual no Sites apresenta a demonstração com dados fictícios e o plano em `/projeto`. Ele não transforma provedores fake em integrações reais. Operações persistentes exigem variáveis autorizadas e um projeto Supabase compatível.
 
+URL acadêmica: `https://mindhub-agenda.comercialeliarachave.chatgpt.site`.
+
+Enquanto o Supabase não estiver conectado, UC01 e UC02 usam armazenamento local do navegador, explicitamente sinalizado na interface. Limpar os dados do site no navegador restaura a massa inicial fictícia.
+
 ## Promoção
 
 1. Validar `pnpm check`.
