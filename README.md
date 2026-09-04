@@ -42,6 +42,8 @@ pnpm dev
 
 Acesse `http://localhost:3000`. A agenda demonstrativa está em `/p/dra-isadora-bezerra` e o estado real da entrega está em `/projeto`.
 
+Para entender o acesso público, o modo demonstração e a configuração das primeiras contas, consulte o [Guia de uso](docs/GUIA-DE-USO.md).
+
 Para o banco local:
 
 ```powershell
@@ -62,7 +64,7 @@ pnpm test:e2e
 pnpm sites:build
 ```
 
-O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório. A publicação pública vigente é [mindhub-agenda.comercialeliarachave.chatgpt.site](https://mindhub-agenda.comercialeliarachave.chatgpt.site).
+O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório. A publicação pública vigente é [TheMindHub.netlify.app](https://themindhub.netlify.app/), vinculada ao GitHub para atualização automática.
 
 ## Regras de produção
 
@@ -96,6 +98,7 @@ O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Wo
 - [Reconciliação inicial](docs/REC-01-RECONCILIACAO.md)
 - [Política de segurança](SECURITY.md)
 - [Como contribuir](CONTRIBUTING.md)
+- [Guia de uso](docs/GUIA-DE-USO.md)
 
 ## Decisões pendentes antes do lançamento real
 

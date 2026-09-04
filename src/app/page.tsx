@@ -20,7 +20,7 @@ export default function Home() {
           <p className="eyebrow">Cuidado começa com organização</p>
           <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[1.06] tracking-[-.04em] text-[#142139] md:text-7xl">Sua agenda leve. Seu atendimento no centro.</h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-[#607087]">O MindHub reúne pacientes, horários, sinal e lembretes em um fluxo simples para a psicóloga e acolhedor para o paciente.</p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/p/dra-isadora-bezerra" className="button-primary min-w-48">Agendar consulta <ArrowRight size={18} /></Link><Link href="/cadastro/psicologa" className="button-secondary min-w-48">Sou psicóloga</Link></div>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/p/dra-isadora-bezerra" className="button-primary min-w-48">Agendar consulta <ArrowRight size={18} /></Link></div>
           <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-[#516378]">
             {['Horários em tempo real', 'Pagamento de sinal seguro', 'Sem prontuário clínico'].map((item) => <span key={item} className="inline-flex items-center gap-2"><CheckCircle2 size={17} className="text-[#117f72]" />{item}</span>)}
           </div>
@@ -35,12 +35,19 @@ export default function Home() {
         </div>
       </section>
       <section className="mx-auto grid max-w-7xl gap-5 px-6 pb-20 md:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <article key={title} className="card p-6"><span className="grid size-11 place-items-center rounded-xl bg-[#e9f6f3] text-[#117f72]"><Icon size={22} /></span><h2 className="mt-5 text-lg font-extrabold">{title}</h2><p className="muted mt-2 leading-6">{text}</p></article>)}</section>
-      <section className="mx-auto max-w-7xl px-6 pb-20">
-        <div className="flex flex-col justify-between gap-5 rounded-[24px] bg-[#142139] p-7 text-white md:flex-row md:items-center md:p-9">
-          <div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#78ddce]">Área exclusiva da psicóloga</p><h2 className="mt-3 text-2xl font-black">Pacientes, agenda e disponibilidade em um só lugar.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">Acesse o painel profissional para organizar cadastros, horários e o acompanhamento administrativo dos atendimentos.</p></div>
-          <Link href="/entrar?next=/app" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 font-extrabold text-[#142139] transition hover:-translate-y-0.5">Acessar área da psicóloga <ArrowRight size={18} /></Link>
+      <footer className="border-t border-[#dfe8e8] bg-white/70">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-9 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <Brand />
+            <p className="muted mt-2 max-w-sm text-sm leading-6">Organização simples para uma rotina de atendimento mais tranquila.</p>
+          </div>
+          <nav aria-label="Links do site" className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-bold text-[#516378]">
+            <Link href="/p/dra-isadora-bezerra" className="transition hover:text-[#117f72]">Agendar consulta</Link>
+            <Link href="/entrar" className="transition hover:text-[#117f72]">Entrar</Link>
+            <Link href="/entrar?next=/app" className="transition hover:text-[#117f72]">Área da psicóloga</Link>
+          </nav>
         </div>
-      </section>
+      </footer>
     </main>
   );
 }
