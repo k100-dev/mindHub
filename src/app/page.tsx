@@ -13,7 +13,7 @@ export default function Home() {
     <main className="min-h-screen bg-[radial-gradient(circle_at_15%_15%,#d9faf2_0,transparent_32%),linear-gradient(145deg,#f8fbfb,#eef3f4)]">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Brand />
-        <div className="flex items-center gap-3"><Link href="/projeto" className="hidden text-sm font-bold text-[#516378] transition hover:text-[#117f72] md:inline-flex">Plano do projeto</Link><Link href="/entrar" className="button-secondary">Entrar</Link><Link href="/cadastro/paciente" className="button-primary hidden sm:inline-flex">Criar conta</Link></div>
+        <div className="flex items-center gap-3"><Link href="/entrar?next=/app" className="hidden text-sm font-bold text-[#516378] transition hover:text-[#117f72] md:inline-flex">Área da psicóloga</Link><Link href="/entrar" className="button-secondary">Entrar</Link><Link href="/cadastro/paciente" className="button-primary hidden sm:inline-flex">Criar conta</Link></div>
       </nav>
       <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-20 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:pt-20">
         <div>
@@ -37,8 +37,8 @@ export default function Home() {
       <section className="mx-auto grid max-w-7xl gap-5 px-6 pb-20 md:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <article key={title} className="card p-6"><span className="grid size-11 place-items-center rounded-xl bg-[#e9f6f3] text-[#117f72]"><Icon size={22} /></span><h2 className="mt-5 text-lg font-extrabold">{title}</h2><p className="muted mt-2 leading-6">{text}</p></article>)}</section>
       <section className="mx-auto max-w-7xl px-6 pb-20">
         <div className="flex flex-col justify-between gap-5 rounded-[24px] bg-[#142139] p-7 text-white md:flex-row md:items-center md:p-9">
-          <div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#78ddce]">Projeto acadêmico em evolução</p><h2 className="mt-3 text-2xl font-black">Veja o que já funciona e a sequência real de finalização.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">A demonstração atual usa dados fictícios. O painel do projeto separa entregas verificadas, próximas etapas e dependências externas.</p></div>
-          <Link href="/projeto" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 font-extrabold text-[#142139] transition hover:-translate-y-0.5">Abrir plano <ArrowRight size={18} /></Link>
+          <div><p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#78ddce]">Área exclusiva da psicóloga</p><h2 className="mt-3 text-2xl font-black">Pacientes, agenda e disponibilidade em um só lugar.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">Acesse o painel profissional para organizar cadastros, horários e o acompanhamento administrativo dos atendimentos.</p></div>
+          <Link href="/entrar?next=/app" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 font-extrabold text-[#142139] transition hover:-translate-y-0.5">Acessar área da psicóloga <ArrowRight size={18} /></Link>
         </div>
       </section>
     </main>

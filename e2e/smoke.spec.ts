@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 test("jornada pública apresenta proposta e chamada de agendamento", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /sua agenda leve/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /área da psicóloga/i }).first()).toHaveAttribute("href", "/entrar?next=/app");
+  await expect(page.getByText(/plano do projeto/i)).toHaveCount(0);
   await page.getByRole("link", { name: /agendar consulta/i }).first().click();
   await expect(page.getByRole("heading", { name: /escolha um horário disponível/i })).toBeVisible();
 });

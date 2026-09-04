@@ -62,7 +62,7 @@ pnpm test:e2e
 pnpm sites:build
 ```
 
-O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório. A publicação acadêmica vigente é [mindhub-agenda.comercialeliarachave.chatgpt.site](https://mindhub-agenda.comercialeliarachave.chatgpt.site).
+O comando `sites:build` gera o pacote compatível com OpenAI Sites/Cloudflare Workers. O vínculo de hospedagem fica versionado em `.openai/hosting.json`; credenciais e tokens nunca entram no repositório. A publicação pública vigente é [mindhub-agenda.comercialeliarachave.chatgpt.site](https://mindhub-agenda.comercialeliarachave.chatgpt.site).
 
 ## Regras de produção
 
