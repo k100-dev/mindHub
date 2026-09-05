@@ -15,7 +15,7 @@ export function PatientForm() {
     const form = new FormData(event.currentTarget);
     const birthDate = String(form.get("birthDate") ?? "");
     try {
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
         createDemoPatient({ name: String(form.get("name")), email: String(form.get("email")), phone: String(form.get("phone")) });
         setMessage("Paciente salvo no modo demonstrativo deste navegador.");
         router.push("/app/pacientes"); router.refresh(); return;

@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { env, hasSupabaseConfig } from "@/lib/env";
+import { env, getSupabasePublicKey, hasSupabaseConfig } from "@/lib/env";
 
 export async function createClient() {
   if (!hasSupabaseConfig()) return null;
@@ -10,7 +10,7 @@ export async function createClient() {
 
   return createServerClient(
     env.NEXT_PUBLIC_SUPABASE_URL!,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    getSupabasePublicKey()!,
     {
       cookies: {
         getAll: () => cookieStore.getAll(),

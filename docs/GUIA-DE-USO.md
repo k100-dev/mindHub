@@ -30,6 +30,8 @@ Quando o Supabase estiver configurado no ambiente publicado:
 
 Portanto, para uso real ainda é necessário configurar as variáveis do Supabase no Netlify e criar as primeiras contas pelo formulário. O modo demonstração não substitui autenticação, persistência, pagamento ou WhatsApp reais.
 
+Para a chave pública, prefira `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; o nome legado `NEXT_PUBLIC_SUPABASE_ANON_KEY` continua aceito pelo aplicativo.
+
 ## Operação diária esperada
 
 - Psicóloga: configurar perfil, disponibilidade e bloqueios; revisar pacientes; acompanhar agenda; atualizar estados dos atendimentos; conferir relatórios.

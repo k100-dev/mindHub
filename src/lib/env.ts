@@ -1,6 +1,14 @@
 import { z } from "zod";
 
 const providerMode = z.enum(["fake", "sandbox", "production"]);
+const optionalString = z.preprocess(
+  (value) => typeof value === "string" && value.trim() === "" ? undefined : value,
+  z.string().min(1).optional(),
+);
+const optionalUrl = z.preprocess(
+  (value) => typeof value === "string" && value.trim() === "" ? undefined : value,
+  z.string().url().optional(),
+);
 
 const serverSchema = z.object({
   APP_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -8,9 +16,10 @@ const serverSchema = z.object({
   APP_TIMEZONE: z.string().default("America/Sao_Paulo"),
   APPOINTMENT_HOLD_MINUTES: z.coerce.number().int().min(5).max(60).default(15),
   PSYCHOLOGIST_ALLOWLIST: z.string().default(""),
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_SUPABASE_URL: optionalUrl,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optionalString,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
+  SUPABASE_SERVICE_ROLE_KEY: optionalString,
   PAYMENT_PROVIDER_MODE: providerMode.default("fake"),
   WHATSAPP_PROVIDER_MODE: providerMode.default("fake"),
   MERCADO_PAGO_ACCESS_TOKEN: z.string().optional(),
@@ -25,8 +34,12 @@ const serverSchema = z.object({
 
 export const env = serverSchema.parse(process.env);
 
+export function getSupabasePublicKey() {
+  return env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+}
+
 export function hasSupabaseConfig() {
-  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && getSupabasePublicKey());
 }
 
 export function assertProductionIntegrationConfig() {
