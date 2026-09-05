@@ -1,13 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-test("jornada pública apresenta proposta e chamada de agendamento", async ({ page }) => {
+test("jornada pública apresenta proposta sem expor dados de consulta", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /sua agenda leve/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /área da psicóloga/i }).first()).toHaveAttribute("href", "/entrar?next=/app");
+  if ((page.viewportSize()?.width ?? 1280) >= 768) {
+    await expect(page.getByRole("link", { name: /área da psicóloga/i }).first()).toHaveAttribute("href", "/entrar?next=/app");
+  }
   await expect(page.getByText(/plano do projeto/i)).toHaveCount(0);
   await expect(page.getByRole("link", { name: /sou psicóloga/i })).toHaveCount(0);
   await expect(page.getByText(/área exclusiva da psicóloga/i)).toHaveCount(0);
-  await page.getByRole("link", { name: /agendar consulta/i }).first().click();
+  await expect(page.getByText(/próxima consulta|agenda da semana|terça-feira, 25 de agosto|confirmado/i)).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /agendar consulta/i })).toHaveCount(0);
+  await expect(page.getByRole("img", { name: /caminhos de cuidado conectados/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /criar conta/i })).toBeVisible();
+  await page.goto("/p/dra-isadora-bezerra");
   await expect(page.getByRole("heading", { name: /escolha um horário disponível/i })).toBeVisible();
 });
 
