@@ -1,11 +1,11 @@
 import { handleRouteError, jsonError } from "@/lib/api";
-import { requireUser } from "@/lib/authz";
+import { requireActivePatient } from "@/lib/authz";
 import { getPaymentProvider } from "@/lib/integrations/payments";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(_: Request, { params }: RouteContext<"/api/appointments/[id]/checkout">) {
   try {
-    const auth = await requireUser();
+    const auth = await requireActivePatient();
     if (!auth) return jsonError("Autenticação necessária.", 401);
     const { id } = await params;
     const admin = createAdminClient();

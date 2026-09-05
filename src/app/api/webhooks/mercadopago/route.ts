@@ -9,22 +9,16 @@ import { maskPhone } from "@/lib/authz";
 type MercadoPagoEvent = { id?: string | number; data?: { id?: string | number }; type?: string; action?: string };
 
 export async function POST(request: Request) {
+  if (env.PAYMENT_PROVIDER_MODE === "fake") return jsonError("Mercado Pago não habilitado.", 503);
   const raw = await request.text();
   let event: MercadoPagoEvent;
   try { event = JSON.parse(raw) as MercadoPagoEvent; } catch { return jsonError("JSON inválido.", 400); }
   const url = new URL(request.url);
   const paymentId = String(event.data?.id ?? url.searchParams.get("data.id") ?? "");
   if (!paymentId) return jsonError("Evento sem identificador.", 422);
-  if (env.PAYMENT_PROVIDER_MODE !== "fake") {
-    if (!env.MERCADO_PAGO_WEBHOOK_SECRET) return jsonError("Webhook não configurado.", 503);
-    const valid = verifyMercadoPagoSignature({
-      signature: request.headers.get("x-signature"),
-      requestId: request.headers.get("x-request-id"),
-      dataId: paymentId,
-      secret: env.MERCADO_PAGO_WEBHOOK_SECRET,
-    });
-    if (!valid) return jsonError("Assinatura inválida.", 401);
-  }
+  if (!env.MERCADO_PAGO_WEBHOOK_SECRET) return jsonError("Webhook não configurado.", 503);
+  const valid = verifyMercadoPagoSignature({ signature: request.headers.get("x-signature"), requestId: request.headers.get("x-request-id"), dataId: paymentId, secret: env.MERCADO_PAGO_WEBHOOK_SECRET });
+  if (!valid) return jsonError("Assinatura inválida.", 401);
   const admin = createAdminClient();
   if (!admin) return jsonError("Supabase administrativo não configurado.", 503);
   const externalEventId = String(event.id ?? `${event.type ?? event.action ?? "payment"}:${paymentId}`);

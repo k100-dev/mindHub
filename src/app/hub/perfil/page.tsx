@@ -1,2 +1,3 @@
 import { PageHeading } from "@/components/page-heading";
-export default function PatientProfilePage() { return <><PageHeading title="Meu perfil" description="Mantenha seus dados de contato atualizados." /><form className="card grid max-w-2xl gap-5 p-6"><label className="grid gap-2 text-sm font-bold">Nome<input className="field" defaultValue="João Silva" /></label><label className="grid gap-2 text-sm font-bold">E-mail<input className="field" type="email" defaultValue="joao.demo@example.com" /></label><label className="grid gap-2 text-sm font-bold">WhatsApp<input className="field" defaultValue="+5511988881101" /></label><button className="button-primary justify-self-start">Salvar perfil</button></form></>; }
+import { PatientProfileForm } from "@/components/profile-settings";
+export default function PatientProfilePage() { return <><PageHeading title="Meu perfil" description="Mantenha seus dados de contato atualizados." /><PatientProfileForm /></>; }

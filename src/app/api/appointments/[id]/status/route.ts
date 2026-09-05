@@ -1,6 +1,7 @@
 import { handleRouteError, jsonError } from "@/lib/api";
 import { requireActivePsychologist } from "@/lib/authz";
 import { statusTransitionSchema } from "@/lib/validation";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request, { params }: RouteContext<"/api/appointments/[id]/status">) {
   try {
@@ -8,7 +9,10 @@ export async function POST(request: Request, { params }: RouteContext<"/api/appo
     if (!auth) return jsonError("Acesso restrito.", 403);
     const { id } = await params;
     const input = statusTransitionSchema.parse(await request.json());
-    const { data, error } = await auth.supabase.rpc("transition_appointment", {
+    const admin = createAdminClient();
+    if (!admin) return jsonError("Serviço temporariamente indisponível.", 503);
+    const { data, error } = await admin.rpc("transition_appointment_for_psychologist", {
+      requested_psychologist_id: auth.user.id,
       requested_appointment_id: id,
       requested_status: input.status,
       requested_reason: input.reason,

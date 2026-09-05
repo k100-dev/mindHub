@@ -20,10 +20,12 @@ export async function GET(request: Request) {
     admin.from("profiles").select("user_id,name,phone").in("user_id", patientIds),
     admin.from("patient_profiles").select("user_id,birth_date").in("user_id", patientIds),
   ]) : [{ data: [] }, { data: [] }];
+  const { data: appointments } = patientIds.length ? await admin.from("appointments").select("patient_id").eq("psychologist_id", auth.user.id).in("patient_id", patientIds) : { data: [] };
   const patients = (links ?? []).map((link) => ({
     ...link,
     profile: profiles?.find((profile) => profile.user_id === link.patient_id),
     patientProfile: patientProfiles?.find((profile) => profile.user_id === link.patient_id),
+    appointments: appointments?.filter((appointment) => appointment.patient_id === link.patient_id).length ?? 0,
   }));
   const filtered = q ? patients.filter((item) => JSON.stringify(item).toLowerCase().includes(q)) : patients;
   return Response.json({ patients: filtered });

@@ -12,7 +12,7 @@ export type WhatsAppTemplateInput = {
 export async function sendWhatsAppTemplate(input: WhatsAppTemplateInput) {
   assertProductionIntegrationConfig();
   if (env.WHATSAPP_PROVIDER_MODE === "fake") {
-    return { providerMessageId: `fake-${crypto.randomUUID()}`, status: "sent" };
+    throw new Error("WhatsApp Cloud API não habilitada.");
   }
   if (!env.WHATSAPP_PHONE_NUMBER_ID || !env.WHATSAPP_ACCESS_TOKEN) {
     throw new Error("WhatsApp Cloud API não configurada.");

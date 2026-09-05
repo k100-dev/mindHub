@@ -31,7 +31,7 @@ Supabase — Auth, PostgreSQL, RLS, Cron e Edge Functions
 
 ## Jornada crítica
 
-1. O paciente autenticado consulta slots públicos.
+1. O paciente ativo e autenticado consulta slots privados.
 2. `create_appointment_hold` valida disponibilidade e cria uma reserva temporária.
 3. Uma restrição GiST no PostgreSQL impede sobreposição concorrente.
 4. O checkout é criado no Mercado Pago.

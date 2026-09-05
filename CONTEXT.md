@@ -1,53 +1,28 @@
 # MindHub
 
-O MindHub organiza a relação administrativa entre pacientes e profissionais de psicologia, com foco em cadastro, agenda, agendamento, pagamento e comunicações operacionais. O contexto exclui deliberadamente o registro e o tratamento de informações clínicas.
+O MindHub é o sistema administrativo exclusivo da psicóloga Isadora Bezerra. Não é uma plataforma para múltiplos profissionais e não oferece cadastro público de psicóloga.
 
-## Linguagem
+## Pessoas e acessos
 
-**Visitante**:
-Pessoa ainda não autenticada que pode conhecer a profissional e consultar horários públicos, mas não criar uma reserva.
-_Evitar_: Paciente (antes da autenticação e identificação nesse papel)
+**Visitante**: pode conhecer o espaço e criar ou acessar uma conta de paciente. Não vê disponibilidade, bloqueios ou agendamentos.
 
-**Paciente**:
-Pessoa que recebe o serviço de psicologia e cuja relação administrativa com a profissional é organizada pelo MindHub.
-_Evitar_: Cliente, usuário (quando a pessoa estiver no papel de paciente)
+**Paciente ativo**: pessoa autenticada com perfil `PATIENT` e conta `ACTIVE`. Pode consultar os horários liberados por Isadora, solicitar um agendamento e visualizar somente seus próprios registros administrativos.
 
-**Psicóloga**:
-Profissional de psicologia que oferece horários e administra pacientes e agendamentos no MindHub.
-_Evitar_: Administradora, secretária
+**Isadora Bezerra**: única profissional autorizada. O acesso exige, ao mesmo tempo, e-mail presente em `PSYCHOLOGIST_ALLOWLIST`, perfil `PSYCHOLOGIST/ACTIVE` e perfil profissional `VERIFIED` com slug `dra-isadora-bezerra`.
 
-**Perfil do Paciente**:
-Identidade administrativa global de um paciente no MindHub, independente de sua relação com uma psicóloga específica.
-_Evitar_: Vínculo profissional–paciente
+## Linguagem do domínio
 
-**Vínculo Profissional–Paciente**:
-Relação administrativa entre uma psicóloga e um paciente, com estado próprio e independente do Perfil do Paciente.
-_Evitar_: Perfil do Paciente
+**Agendamento** é o compromisso administrativo entre Isadora e um paciente.
 
-**Observação administrativa**:
-Anotação operacional sobre a relação com o paciente, limitada a informações não clínicas necessárias ao atendimento administrativo.
-_Evitar_: Evolução, anamnese, nota clínica
+**Reserva temporária** ocupa um horário durante a etapa de confirmação. Não equivale a agendamento confirmado.
 
-**Agendamento**:
-Compromisso administrativo entre uma psicóloga e um paciente para um horário determinado, com ciclo de vida próprio.
-_Evitar_: Consulta (quando o assunto for o registro administrativo)
+**Sinal** é o pagamento configurado por Isadora para confirmar um agendamento. O retorno do navegador nunca confirma pagamento; somente o webhook autenticado do provedor pode fazê-lo.
 
-**Reserva temporária**:
-Ocupação exclusiva e limitada no tempo de um horário enquanto o paciente conclui as condições de confirmação.
-_Evitar_: Agendamento confirmado
+**Bloqueio de agenda** torna um intervalo indisponível. Seu motivo administrativo é privado e nunca é enviado ao paciente.
 
-**Sinal**:
-Pagamento exigido para confirmar um Agendamento após a Reserva temporária.
-_Evitar_: Confirmação do agendamento, pagamento integral
+**Observação administrativa** contém apenas informação operacional sobre o atendimento. Diagnóstico, evolução, anamnese, prescrição e conteúdo de sessão são informação clínica e estão fora do MindHub.
 
-**Bloqueio de agenda**:
-Intervalo que a psicóloga torna indisponível para novos agendamentos, mantendo privado o motivo administrativo.
-_Evitar_: Cancelamento de agendamento
+## Fonte de verdade
 
-**Registro administrativo**:
-Informação necessária para identificar o paciente e operar cadastro, agenda, agendamento, pagamento e comunicações.
-_Evitar_: Prontuário, registro clínico
+Supabase Auth identifica a sessão. A autorização usa exclusivamente `profiles`, `patient_profiles` e `psychologist_profiles`; `user_metadata` serve apenas como entrada inicial de nome e telefone e nunca decide papel ou permissão. PostgreSQL, RLS e as migrações em `supabase/migrations` são a fonte executável dos dados.
 
-**Informação clínica**:
-Conteúdo sobre diagnóstico, evolução terapêutica, prescrição ou atendimento clínico, explicitamente fora do escopo do MindHub.
-_Evitar_: Tratar como observação administrativa

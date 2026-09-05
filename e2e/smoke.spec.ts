@@ -1,58 +1,52 @@
 import { expect, test } from "@playwright/test";
 
-test("jornada pública apresenta proposta sem expor dados de consulta", async ({ page }) => {
+test("página pública é exclusiva de Isadora e não expõe agenda", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /sua agenda leve/i })).toBeVisible();
-  if ((page.viewportSize()?.width ?? 1280) >= 768) {
-    await expect(page.getByRole("link", { name: /área da psicóloga/i }).first()).toHaveAttribute("href", "/entrar?next=/app");
-  }
-  await expect(page.getByText(/plano do projeto/i)).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /sou psicóloga/i })).toHaveCount(0);
-  await expect(page.getByText(/área exclusiva da psicóloga/i)).toHaveCount(0);
-  await expect(page.getByText(/próxima consulta|agenda da semana|terça-feira, 25 de agosto|confirmado/i)).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /agendar consulta/i })).toHaveCount(0);
-  await expect(page.getByRole("img", { name: /caminhos de cuidado conectados/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /criar conta/i })).toBeVisible();
-  await page.goto("/p/dra-isadora-bezerra");
-  await expect(page.getByRole("heading", { name: /escolha um horário disponível/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /seu horário, com clareza e privacidade/i })).toBeVisible();
+  await expect(page.getByText(/atendimento com Isadora Bezerra/i).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /agendar atendimento/i })).toHaveAttribute("href", /cadastro\/paciente\?next=/);
+  await expect(page.getByText(/CRP|São Paulo|psicologia clínica|horários disponíveis|demonstração|MVP/i)).toHaveCount(0);
+  await expect(page.locator("img, svg[role=img]")).toHaveCount(0);
 });
 
-test("cadastro de paciente informa campos obrigatórios", async ({ page }) => {
+test("perfil público direciona ao acesso sem renderizar slots", async ({ page }) => {
+  await page.goto("/p/dra-isadora-bezerra");
+  await expect(page.getByRole("heading", { name: /atendimento com Isadora Bezerra/i })).toBeVisible();
+  await expect(page.getByText(/agenda não é exibida publicamente/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: /\d{2}:\d{2}/ })).toHaveCount(0);
+});
+
+test("rotas privadas fecham sem Supabase ou sessão e preservam next", async ({ page, request }) => {
+  await page.goto("/app");
+  await expect(page).toHaveURL(/\/entrar\?next=(%2F|\/)app/);
+  await page.goto("/hub");
+  await expect(page).toHaveURL(/\/entrar\?next=(%2F|\/)hub/);
+  await page.goto("/p/dra-isadora-bezerra/horarios");
+  await expect(page).toHaveURL(/\/entrar\?next=/);
+  const slots = await request.get("/api/public/psychologists/dra-isadora-bezerra/slots");
+  expect(slots.status()).toBe(401);
+});
+
+test("cadastro profissional e painel acadêmico não são públicos", async ({ request }) => {
+  expect((await request.get("/cadastro/psicologa")).status()).toBe(404);
+  expect((await request.get("/projeto")).status()).toBe(404);
+  expect((await request.post("/api/auth/psychologists/register", { data: {} })).status()).toBe(404);
+});
+
+test("cadastro de paciente e recuperação têm os campos necessários", async ({ page }) => {
   await page.goto("/cadastro/paciente");
-  await expect(page.getByRole("heading", { name: /crie seu acesso/i })).toBeVisible();
   await expect(page.getByLabel(/nome completo/i)).toBeVisible();
   await expect(page.getByLabel(/^e-mail$/i)).toBeVisible();
   await expect(page.getByLabel(/whatsapp/i)).toBeVisible();
+  await page.goto("/auth/atualizar-senha");
+  await expect(page.getByLabel(/nova senha/i)).toBeVisible();
+  await expect(page.getByLabel(/confirmar senha/i)).toBeVisible();
 });
 
-test("painel do projeto apresenta os gates reais do MVP", async ({ page }) => {
-  await page.goto("/projeto");
-  await expect(page.getByRole("heading", { name: /seis gates para concluir o MVP/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /supabase funcional/i })).toBeVisible();
-  await expect(page.getByText(/ainda não é produção/i)).toBeVisible();
-});
-
-test("UC01 e UC02 funcionam no modo demonstrativo", async ({ page }) => {
-  await page.goto("/app/pacientes");
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
-  await page.getByRole("link", { name: /novo paciente/i }).click();
-  await page.getByLabel(/nome completo/i).fill("Paciente de Teste");
-  await page.getByLabel(/^e-mail$/i).fill("paciente.teste@example.com");
-  await page.getByLabel(/whatsapp/i).fill("+55 43 99999-0000");
-  await page.getByRole("button", { name: /salvar paciente/i }).click();
-  await expect(page.getByText("Paciente de Teste")).toBeVisible();
-
-  await page.goto("/app/agenda");
-  await page.getByLabel("Paciente").selectOption({ label: "Paciente de Teste" });
-  await page.getByLabel("Data").fill("2026-09-04");
-  await page.getByLabel("Horário").fill("16:00");
-  await page.getByRole("button", { name: /criar agendamento/i }).click();
-  await expect(page.getByRole("status")).toContainText(/agendamento criado/i);
-
-  await page.getByLabel("Paciente").selectOption({ label: "Paciente de Teste" });
-  await page.getByLabel("Data").fill("2026-09-04");
-  await page.getByLabel("Horário").fill("16:00");
-  await page.getByRole("button", { name: /criar agendamento/i }).click();
-  await expect(page.getByRole("status")).toContainText(/conflito/i);
+test("layout não cria rolagem horizontal, inclusive com texto ampliado", async ({ page }) => {
+  await page.goto("/");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await expect(page.getByRole("heading", { name: /seu horário, com clareza e privacidade/i })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

@@ -5,6 +5,14 @@ import { requireActivePsychologist } from "@/lib/authz";
 const rule = z.object({ weekday: z.number().int().min(0).max(6), startsAt: z.string().regex(/^\d{2}:\d{2}$/), endsAt: z.string().regex(/^\d{2}:\d{2}$/), enabled: z.boolean() });
 const schema = z.object({ rules: z.array(rule).length(7), sessionDurationMinutes: z.number().int().min(20).max(240).default(60) });
 
+export async function GET() {
+  const auth = await requireActivePsychologist();
+  if (!auth) return jsonError("Acesso restrito.", 403);
+  const { data, error } = await auth.supabase.from("availability_rules").select("id,weekday,starts_at,ends_at,session_duration_minutes").eq("psychologist_id", auth.user.id).eq("active", true).order("weekday");
+  if (error) return jsonError("Não foi possível carregar a disponibilidade.", 500);
+  return Response.json({ rules: data ?? [] }, { headers: { "Cache-Control": "private, no-store" } });
+}
+
 export async function PUT(request: Request) {
   try {
     const auth = await requireActivePsychologist();

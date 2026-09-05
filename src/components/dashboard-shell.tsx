@@ -6,6 +6,7 @@ import { BarChart3, CalendarDays, Clock3, LayoutDashboard, Menu, Settings, UserR
 import { useState } from "react";
 import { Brand } from "@/components/brand";
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/sign-out-button";
 
 const items = [
   { href: "/app", label: "Visão geral", icon: LayoutDashboard, exact: true },
@@ -16,7 +17,7 @@ const items = [
   { href: "/app/configuracoes/perfil", label: "Configurações", icon: Settings },
 ];
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+export function DashboardShell({ children, name }: { children: React.ReactNode; name: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   return (
@@ -31,7 +32,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             return <Link key={href} href={href} onClick={() => setOpen(false)} className={cn("flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold transition", active ? "bg-white text-[#155f42]" : "text-white/78 hover:bg-white/10 hover:text-white")}><Icon size={19} />{label}</Link>;
           })}
         </nav>
-        <div className="mt-auto rounded-2xl border border-white/15 bg-white/8 p-3 text-white"><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-full bg-white/12"><UserRound /></span><div><p className="text-sm font-extrabold">Dra. Isadora B.</p><p className="text-xs text-white/60">Conta verificada</p></div></div></div>
+        <div className="mt-auto rounded-2xl border border-white/15 bg-white/8 p-3 text-white"><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-full bg-white/12"><UserRound /></span><div className="min-w-0 flex-1"><p className="truncate text-sm font-extrabold">{name}</p><p className="text-xs text-white/60">Acesso profissional</p></div><SignOutButton compact /></div></div>
       </aside>
       <main className="min-w-0 p-4 pt-20 sm:p-7 sm:pt-20 lg:p-8">{children}</main>
     </div>

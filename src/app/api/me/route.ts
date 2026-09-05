@@ -20,7 +20,7 @@ export async function GET() {
   const { data: roleProfile } = profile?.role === "PSYCHOLOGIST"
     ? await auth.supabase.from("psychologist_profiles").select("*").eq("user_id", auth.user.id).single()
     : await auth.supabase.from("patient_profiles").select("*").eq("user_id", auth.user.id).single();
-  return Response.json({ profile, roleProfile, email: auth.user.email });
+  return Response.json({ profile, roleProfile, email: auth.user.email }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
 export async function PATCH(request: Request) {

@@ -12,14 +12,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (env.WHATSAPP_PROVIDER_MODE === "fake") return jsonError("WhatsApp não habilitado.", 503);
   const raw = await request.text();
-  if (env.WHATSAPP_PROVIDER_MODE !== "fake") {
-    if (!env.WHATSAPP_APP_SECRET) return jsonError("Webhook não configurado.", 503);
-    const received = request.headers.get("x-hub-signature-256")?.replace("sha256=", "") ?? "";
-    const expected = createHmac("sha256", env.WHATSAPP_APP_SECRET).update(raw).digest("hex");
-    const a = Buffer.from(received, "hex"); const b = Buffer.from(expected, "hex");
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return jsonError("Assinatura inválida.", 401);
-  }
+  if (!env.WHATSAPP_APP_SECRET) return jsonError("Webhook não configurado.", 503);
+  const received = request.headers.get("x-hub-signature-256")?.replace("sha256=", "") ?? "";
+  const expected = createHmac("sha256", env.WHATSAPP_APP_SECRET).update(raw).digest("hex");
+  const a = Buffer.from(received, "hex"); const b = Buffer.from(expected, "hex");
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return jsonError("Assinatura inválida.", 401);
   const admin = createAdminClient();
   if (!admin) return jsonError("Supabase administrativo não configurado.", 503);
   let payload: Record<string, unknown>;

@@ -1,22 +1,26 @@
 # Segurança
 
-## Escopo de dados
+## Limite de dados
 
-O MindHub armazena somente informações administrativas. Prontuário, diagnóstico, evolução clínica, prescrição e documentos de saúde estão fora do escopo.
+O MindHub armazena somente dados administrativos. Não registre diagnóstico, evolução, anamnese, prescrição, documentos de saúde ou conteúdo de sessão.
 
-## Relato responsável
+## Controles implementados
 
-Não abra uma issue pública com vulnerabilidades, credenciais ou dados pessoais. Use o canal privado do proprietário do repositório.
+- autorização obtida dos perfis no banco, nunca de `user_metadata`;
+- cadastro público sempre cria paciente;
+- acesso profissional exige allowlist, conta ativa, verificação e slug canônico de Isadora;
+- RLS em todas as 13 tabelas, grants explícitos e nenhum grant de tabela para `anon`;
+- agenda e slots somente para paciente ativo autenticado;
+- bloqueios e `administrative_reason` restritos à profissional;
+- funções `SECURITY DEFINER` com `search_path` fixo e validação interna de ator;
+- confirmação de pagamento somente após webhook assinado e idempotente;
+- nenhuma integração falsa produz sucesso.
 
-## Regras para desenvolvimento
+O teste `supabase/tests/rls.sql` cria identidades sintéticas dentro de uma transação, valida isolamento entre dois pacientes e executa `ROLLBACK`.
 
-- Nunca versionar `.env.local`, tokens, chaves ou dumps com dados reais.
-- Usar somente fixtures fictícias.
-- Manter RLS ativa e testar autorização negativa.
-- Confirmar pagamentos apenas por webhook autenticado.
-- Mascarar identificadores pessoais em logs.
-- Fazer backup antes de migrações destrutivas.
+## Antes de dados reais
 
-## Lançamento
+Concluir revisão jurídica/LGPD, retenção e exclusão; validar backup e restauração; configurar rate limiting e observabilidade; testar webhooks e concorrência; revisar acesso de produção e rotação de segredos.
 
-O projeto não deve receber dados reais até a revisão de segurança/LGPD e a validação de backup, restauração, webhooks, rate limiting e consentimento do WhatsApp.
+Vulnerabilidades, segredos e dados pessoais devem ser enviados apenas ao proprietário por canal privado, nunca em issue pública.
+

@@ -15,19 +15,6 @@ export interface PaymentProvider {
   getPayment(paymentId: string): Promise<{ status: string; externalReference?: string }>;
 }
 
-class FakePaymentProvider implements PaymentProvider {
-  async createCheckout(input: CheckoutInput) {
-    return {
-      externalId: `fake-${input.appointmentId}`,
-      checkoutUrl: `${env.NEXT_PUBLIC_APP_URL}/pagamento/retorno?appointment=${input.appointmentId}&demo=1`,
-    };
-  }
-
-  async getPayment(paymentId: string) {
-    return { status: "approved", externalReference: paymentId.replace("fake-", "") };
-  }
-}
-
 class MercadoPagoProvider implements PaymentProvider {
   private client = new MercadoPagoConfig({ accessToken: env.MERCADO_PAGO_ACCESS_TOKEN! });
 
@@ -66,7 +53,7 @@ class MercadoPagoProvider implements PaymentProvider {
 
 export function getPaymentProvider(): PaymentProvider {
   assertProductionIntegrationConfig();
-  if (env.PAYMENT_PROVIDER_MODE === "fake") return new FakePaymentProvider();
+  if (env.PAYMENT_PROVIDER_MODE === "fake") throw new Error("Mercado Pago não habilitado.");
   if (!env.MERCADO_PAGO_ACCESS_TOKEN) throw new Error("Mercado Pago não configurado.");
   return new MercadoPagoProvider();
 }

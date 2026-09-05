@@ -1,11 +1,17 @@
 import { addDays, addMinutes, format } from "date-fns";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { jsonError } from "@/lib/api";
+import { requireActivePatient } from "@/lib/authz";
+import { env } from "@/lib/env";
+import { ISADORA_SLUG } from "@/lib/mindhub";
 
 export async function GET(request: Request, { params }: RouteContext<"/api/public/psychologists/[slug]/slots">) {
+  const auth = await requireActivePatient();
+  if (!auth) return jsonError("Entre como paciente para consultar horários.", 401);
   const supabase = createAdminClient();
   if (!supabase) return jsonError("Supabase administrativo ainda não foi configurado.", 503);
   const { slug } = await params;
+  if (slug !== ISADORA_SLUG) return jsonError("Perfil não encontrado.", 404);
   const url = new URL(request.url);
   const from = url.searchParams.get("from") ? new Date(url.searchParams.get("from")!) : new Date();
   const to = url.searchParams.get("to") ? new Date(url.searchParams.get("to")!) : addDays(from, 14);
@@ -43,5 +49,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/publi
       }
     }
   }
-  return Response.json({ psychologistId: professional.user_id, slots });
+  const bookingEnabled = env.PAYMENT_PROVIDER_MODE !== "fake" && Boolean(env.MERCADO_PAGO_ACCESS_TOKEN);
+  const { data: configuration } = await supabase.from("psychologist_profiles").select("deposit_amount").eq("user_id", professional.user_id).single();
+  return Response.json({ slots, sessionDurationMinutes: professional.session_duration_minutes, depositAmount: Number(configuration?.deposit_amount ?? 0), bookingEnabled }, { headers: { "Cache-Control": "private, no-store" } });
 }

@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
-import { createDemoPatient } from "@/lib/demo-workspace";
 
 export function PatientForm() {
   const [message, setMessage] = useState("");
@@ -15,25 +14,13 @@ export function PatientForm() {
     const form = new FormData(event.currentTarget);
     const birthDate = String(form.get("birthDate") ?? "");
     try {
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
-        createDemoPatient({ name: String(form.get("name")), email: String(form.get("email")), phone: String(form.get("phone")) });
-        setMessage("Paciente salvo no modo demonstrativo deste navegador.");
-        router.push("/app/pacientes"); router.refresh(); return;
-      }
       const response = await fetch("/api/patients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.get("name"), email: form.get("email"), phone: form.get("phone"), ...(birthDate && { birthDate }) }),
       });
       const body = await response.json();
-      if (!response.ok) {
-        if ([403, 503].includes(response.status)) {
-          createDemoPatient({ name: String(form.get("name")), email: String(form.get("email")), phone: String(form.get("phone")) });
-          setMessage("Paciente salvo no modo demonstrativo deste navegador.");
-          router.push("/app/pacientes"); router.refresh(); return;
-        }
-        throw new Error(body.error?.message ?? "Não foi possível salvar.");
-      }
+      if (!response.ok) throw new Error(body.error?.message ?? "Não foi possível salvar.");
       setMessage("Paciente cadastrado e convite de acesso enviado.");
       router.push(`/app/pacientes/${body.patient.id}`); router.refresh();
     } catch (error) {

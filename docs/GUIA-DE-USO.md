@@ -1,43 +1,22 @@
 # Guia de uso do MindHub
 
-## Acesso público
+## Visitante e paciente
 
-O endereço principal é [TheMindHub.netlify.app](https://themindhub.netlify.app/). A página inicial é voltada para pacientes: a ação principal é consultar horários e iniciar um agendamento.
+Na página inicial, use **Agendar atendimento**. O visitante cria uma conta de paciente ou entra em uma conta existente. A disponibilidade aparece apenas depois da autenticação e somente quando Isadora possuir perfil verificado e horários ativos.
 
-## Modo demonstração
+O hub do paciente mostra exclusivamente os próprios agendamentos e dados de contato. Ele não exibe bloqueios internos, motivos administrativos nem dados de outra pessoa.
 
-O ambiente público atual funciona sem credenciais quando o Supabase não está configurado. Isso permite apresentar as jornadas UC01 e UC02 com dados fictícios.
+## Isadora Bezerra
 
-1. Abra `/app/pacientes` para cadastrar, buscar, inativar e reativar pacientes.
-2. Abra `/app/agenda` para criar agendamentos nas visões de dia, semana e mês.
-3. Tente criar duas vezes o mesmo paciente, data e horário para demonstrar a prevenção de conflito.
-4. Abra `/app/disponibilidade` para editar horários recorrentes e registrar bloqueios.
-5. Use `/p/dra-isadora-bezerra` para visualizar a agenda pública e iniciar o fluxo do paciente.
+Não existe cadastro profissional público. A conta é provisionada de forma administrativa e só acessa `/app` quando o e-mail está em `PSYCHOLOGIST_ALLOWLIST`, o perfil está ativo e o perfil profissional está verificado com o slug canônico.
 
-Neste modo, os dados ficam somente no navegador e podem ser apagados ao limpar o armazenamento do site. Não use dados reais de pacientes.
+No painel, Isadora pode cadastrar ou convidar pacientes, organizar agenda, definir disponibilidade, criar bloqueios, atualizar estados e consultar relatórios administrativos.
 
-## Login e credenciais
+## Integrações
 
-Não existe uma credencial fixa ou conta de demonstração compartilhada no repositório. Não é seguro inventar ou versionar uma senha.
+Mercado Pago e WhatsApp mostram **Não habilitado** enquanto as respectivas credenciais não estiverem configuradas. O sistema não cria pagamentos, envios ou confirmações fictícias. O retorno do navegador informa apenas que a verificação está em andamento; a confirmação depende do webhook assinado.
 
-Quando o Supabase estiver configurado no ambiente publicado:
+## Recuperação de senha
 
-1. A psicóloga cria a conta em `/cadastro/psicologa` com nome, e-mail, telefone, CRP e uma senha de pelo menos 10 caracteres.
-2. Ela confirma o e-mail recebido.
-3. A conta permanece pendente até ser autorizada pela allowlist do ambiente (`PSYCHOLOGIST_ALLOWLIST`).
-4. Depois da ativação, o login em `/entrar` direciona para `/app`.
-5. O paciente cria a própria conta em `/cadastro/paciente` e, após confirmar o e-mail, usa o `/hub` para acompanhar seus agendamentos.
+Use **Esqueci minha senha** na tela de entrada. O link recebido passa pelo callback seguro e abre `/auth/atualizar-senha` para definir uma nova senha.
 
-Portanto, para uso real ainda é necessário configurar as variáveis do Supabase no Netlify e criar as primeiras contas pelo formulário. O modo demonstração não substitui autenticação, persistência, pagamento ou WhatsApp reais.
-
-Para a chave pública, prefira `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; o nome legado `NEXT_PUBLIC_SUPABASE_ANON_KEY` continua aceito pelo aplicativo.
-
-## Operação diária esperada
-
-- Psicóloga: configurar perfil, disponibilidade e bloqueios; revisar pacientes; acompanhar agenda; atualizar estados dos atendimentos; conferir relatórios.
-- Paciente: abrir o perfil público, escolher um horário, criar ou acessar sua conta, concluir o fluxo de sinal e acompanhar a confirmação no Hub.
-- Administrador técnico: manter segredos somente nas variáveis protegidas do ambiente e revisar logs, webhooks, backup e política LGPD.
-
-## Limites atuais
-
-O release público é uma fundação demonstrativa navegável. A persistência real no Supabase, o Checkout Pro do Mercado Pago e o envio de WhatsApp dependem de credenciais e configuração dos ambientes. Até esses gates serem validados, use apenas dados fictícios.
