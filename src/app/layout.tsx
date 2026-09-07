@@ -3,17 +3,17 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "MindHub", template: "%s | MindHub" },
-  description: "Acesso privado para solicitar e acompanhar horários com Isadora Bezerra.",
+  description: "Acesso privado para solicitar e acompanhar horários.",
   openGraph: {
     title: "MindHub",
-    description: "Acesso privado para solicitar e acompanhar horários com Isadora Bezerra.",
+    description: "Acesso privado para solicitar e acompanhar horários.",
     type: "website",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
     title: "MindHub",
-    description: "Acesso privado para solicitar e acompanhar horários com Isadora Bezerra.",
+    description: "Acesso privado para solicitar e acompanhar horários.",
   },
 };
 

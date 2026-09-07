@@ -1,6 +1,5 @@
 import { handleRouteError, jsonError } from "@/lib/api";
 import { requireActivePatient } from "@/lib/authz";
-import { env } from "@/lib/env";
 import { holdSchema } from "@/lib/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -9,7 +8,6 @@ export async function POST(request: Request) {
     const auth = await requireActivePatient();
     if (!auth) return jsonError("Entre como paciente para reservar.", 401);
     const input = holdSchema.parse(await request.json());
-    if (env.PAYMENT_PROVIDER_MODE === "fake" || !env.MERCADO_PAGO_ACCESS_TOKEN) return jsonError("A confirmação de novos horários ainda não está habilitada.", 503);
     const admin = createAdminClient();
     if (!admin) return jsonError("Agenda temporariamente indisponível.", 503);
     const { data: professional } = await admin.from("psychologist_profiles").select("user_id").eq("public_slug", input.psychologistSlug).eq("verification_status", "VERIFIED").maybeSingle();
@@ -18,7 +16,6 @@ export async function POST(request: Request) {
       requested_patient_id: auth.user.id,
       requested_psychologist_id: professional.user_id,
       requested_starts_at: input.startsAt,
-      hold_minutes: env.APPOINTMENT_HOLD_MINUTES,
     });
     if (error) {
       const conflict = /SLOT_CONFLICT|BLOCKED_SLOT|UNAVAILABLE_SLOT/.test(error.message);

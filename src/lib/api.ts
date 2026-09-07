@@ -6,7 +6,7 @@ export function jsonError(message: string, status: number, details?: unknown) {
 
 export function handleRouteError(error: unknown) {
   if (error instanceof ZodError) {
-    return jsonError("Dados inválidos.", 422, error.flatten());
+    return jsonError(error.issues[0]?.message ?? "Confira os dados informados.", 422, error.flatten());
   }
   if (error instanceof SyntaxError) return jsonError("JSON inválido.", 400);
   console.error("route_error", error instanceof Error ? error.message : "unknown");

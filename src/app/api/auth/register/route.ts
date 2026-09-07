@@ -22,6 +22,6 @@ export async function POST(request: Request) {
       if (error.message.toLowerCase().includes("already")) return jsonError("Este e-mail já está cadastrado.", 409);
       return jsonError("Não foi possível criar a conta.", 400);
     }
-    return Response.json({ userId: result.user?.id, status: "ACTIVE" }, { status: 201 });
+    return Response.json({ userId: result.user?.id, requiresEmailConfirmation: !result.session }, { status: 201 });
   } catch (error) { return handleRouteError(error); }
 }

@@ -34,8 +34,8 @@ export async function PATCH(request: Request, { params }: RouteContext<"/api/pat
     if (!admin) return jsonError("Supabase administrativo não configurado.", 503);
     if (!link) return jsonError("Paciente não encontrado.", 404);
     const input = patientSchema.partial().parse(await request.json());
-    if (input.name || input.phone) await admin.from("profiles").update({ ...(input.name && { name: input.name }), ...(input.phone && { phone: input.phone }) }).eq("user_id", id);
-    if (input.birthDate) await admin.from("patient_profiles").update({ birth_date: input.birthDate }).eq("user_id", id);
+    if (input.name || input.phone) { const { error } = await admin.from("profiles").update({ ...(input.name && { name: input.name }), ...(input.phone && { phone: input.phone }) }).eq("user_id", id); if (error) throw error; }
+    if (input.birthDate) { const { error } = await admin.from("patient_profiles").update({ birth_date: input.birthDate }).eq("user_id", id); if (error) throw error; }
     await admin.from("audit_logs").insert({ actor_id: auth.user.id, action: "PATIENT_UPDATED", resource_type: "psychologist_patient", resource_id: link.id });
     return Response.json({ updated: true });
   } catch (error) {

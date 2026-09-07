@@ -2,7 +2,6 @@ import "server-only";
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
-import { ISADORA_SLUG } from "@/lib/mindhub";
 
 export async function requireUser() {
   const supabase = await createClient();
@@ -34,7 +33,7 @@ export async function requireActivePsychologist() {
   ]);
   if (
     profile?.role !== "PSYCHOLOGIST" || profile.status !== "ACTIVE" ||
-    professional?.verification_status !== "VERIFIED" || professional.public_slug !== ISADORA_SLUG
+    professional?.verification_status !== "VERIFIED"
   ) return null;
   return { ...auth, profile, professional };
 }

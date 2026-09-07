@@ -1,22 +1,28 @@
 # Guia de uso do MindHub
 
-## Visitante e paciente
+## Preparação pela profissional
 
-Na página inicial, use **Agendar atendimento**. O visitante cria uma conta de paciente ou entra em uma conta existente. A disponibilidade aparece apenas depois da autenticação e somente quando Isadora possuir perfil verificado e horários ativos.
+1. Entre na conta profissional e abra Configurações de perfil.
+2. Confira nome profissional, telefone, duração, preço total e valor do sinal. O exemplo inicial é 60 minutos, R$ 150 e R$ 75.
+3. Preencha instruções de pagamento com dados reais e confira o beneficiário. A transferência ocorre fora do MindHub.
+4. Em Disponibilidade, defina os dias e horários efetivos de atendimento. Use bloqueios para exceções. Não foram inventados horários reais nesta implantação.
 
-O hub do paciente mostra exclusivamente os próprios agendamentos e dados de contato. Ele não exibe bloqueios internos, motivos administrativos nem dados de outra pessoa.
+## Paciente
 
-## Isadora Bezerra
+Crie a conta com nome, e-mail, telefone, senha e confirmação. Os controles ao lado dos campos permitem conferir a senha. Confirme o e-mail quando solicitado e entre na conta.
 
-Não existe cadastro profissional público. A conta é provisionada de forma administrativa e só acessa `/app` quando o e-mail está em `PSYCHOLOGIST_ALLOWLIST`, o perfil está ativo e o perfil profissional está verificado com o slug canônico.
+Abra Agendar, escolha um horário e solicite. O horário já fica reservado, com “Agendamento pendente”. Siga as instruções de pagamento e aguarde o contato da profissional. É possível acompanhar o valor registrado e a situação na página do atendimento.
 
-No painel, Isadora pode cadastrar ou convidar pacientes, organizar agenda, definir disponibilidade, criar bloqueios, atualizar estados e consultar relatórios administrativos.
+Para remarcar, abra o atendimento e selecione outro horário. A ação direta exige pelo menos 24 horas de antecedência; o sinal é mantido e a confirmação volta a ficar pendente. Para cancelar, confira a mensagem de devolução antes de confirmar. Com menos de 24 horas não há reembolso pela regra desta versão.
 
-## Integrações
+## Profissional
 
-Mercado Pago e WhatsApp mostram **Não habilitado** enquanto as respectivas credenciais não estiverem configuradas. O sistema não cria pagamentos, envios ou confirmações fictícias. O retorno do navegador informa apenas que a verificação está em andamento; a confirmação depende do webhook assinado.
+No dashboard, abra as pendências de novo atendimento. Confira o recebimento fora da plataforma, selecione Registrar pagamento e informe o total já recebido (não apenas a diferença). Após falar com o paciente, selecione Confirmar atendimento.
 
-## Recuperação de senha
+Gerencie os pacientes pela lista, abra um registro para editar nome, telefone e nascimento e consulte o histórico administrativo. Desativar um vínculo preserva o histórico. Observações não devem conter conteúdo clínico.
 
-Use **Esqueci minha senha** na tela de entrada. O link recebido passa pelo callback seguro e abre `/auth/atualizar-senha` para definir uma nova senha.
+Após cancelamento elegível, o dashboard destaca o reembolso. Realize a devolução externamente e somente depois registre “Já realizei o reembolso”. O botão não transfere dinheiro.
 
+## Recuperação
+
+Use Esqueci minha senha na entrada. O link abre a definição de uma nova senha e confirmação. Se houver indisponibilidade de conexão ou envio, a tela informa o problema e permite tentar novamente.

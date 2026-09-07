@@ -1,55 +1,52 @@
-import { addDays, addMinutes, format } from "date-fns";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { jsonError } from "@/lib/api";
-import { requireActivePatient } from "@/lib/authz";
-import { env } from "@/lib/env";
-import { ISADORA_SLUG } from "@/lib/mindhub";
+import { requireActivePatient, requireActivePsychologist } from "@/lib/authz";
+import { getProfessional } from "@/lib/professional";
 
 export async function GET(request: Request, { params }: RouteContext<"/api/public/psychologists/[slug]/slots">) {
-  const auth = await requireActivePatient();
-  if (!auth) return jsonError("Entre como paciente para consultar horários.", 401);
-  const supabase = createAdminClient();
-  if (!supabase) return jsonError("Supabase administrativo ainda não foi configurado.", 503);
+  const auth = await requireActivePatient() ?? await requireActivePsychologist();
+  if (!auth) return jsonError("Entre na sua conta para consultar horários.", 401);
+  const admin = createAdminClient();
+  if (!admin) return jsonError("Agenda temporariamente indisponível.", 503);
   const { slug } = await params;
-  if (slug !== ISADORA_SLUG) return jsonError("Perfil não encontrado.", 404);
+  const professional = await getProfessional(slug);
+  if (!professional) return jsonError("Agenda não encontrada.", 404);
   const url = new URL(request.url);
-  const from = url.searchParams.get("from") ? new Date(url.searchParams.get("from")!) : new Date();
-  const to = url.searchParams.get("to") ? new Date(url.searchParams.get("to")!) : addDays(from, 14);
-  if (Number.isNaN(from.valueOf()) || Number.isNaN(to.valueOf()) || to <= from || to.getTime() - from.getTime() > 31 * 86400000) {
-    return jsonError("Intervalo inválido; consulte no máximo 31 dias.", 422);
+  const now = new Date();
+  const from = new Date(url.searchParams.get("from") ?? now.toISOString());
+  const to = new Date(url.searchParams.get("to") ?? new Date(from.getTime() + 14 * 86400000).toISOString());
+  if (!Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime()) || to <= from || to.getTime() - from.getTime() > 31 * 86400000) return jsonError("Consulte um intervalo de até 31 dias.", 422);
+  let duration = professional.session_duration_minutes;
+  let price = Number(professional.session_price);
+  let deposit = Number(professional.deposit_amount);
+  const appointmentId = url.searchParams.get("appointmentId");
+  if (appointmentId) {
+    const { data: appointment } = await admin.from("appointments").select("patient_id,psychologist_id,starts_at,ends_at,session_price,deposit_amount").eq("id", appointmentId).maybeSingle();
+    if (!appointment || appointment.psychologist_id !== professional.user_id || ![appointment.patient_id, appointment.psychologist_id].includes(auth.user.id)) return jsonError("Agendamento não encontrado.", 404);
+    duration = (new Date(appointment.ends_at).getTime() - new Date(appointment.starts_at).getTime()) / 60000;
+    price = Number(appointment.session_price); deposit = Number(appointment.deposit_amount);
   }
-  const { data: professional } = await supabase
-    .from("psychologist_profiles")
-    .select("user_id,session_duration_minutes")
-    .eq("public_slug", slug)
-    .eq("verification_status", "VERIFIED")
-    .maybeSingle();
-  if (!professional) return jsonError("Perfil não encontrado.", 404);
-  const [{ data: rules }, { data: blocks }, { data: appointments }] = await Promise.all([
-    supabase.from("availability_rules").select("weekday,starts_at,ends_at,session_duration_minutes,valid_from,valid_until").eq("psychologist_id", professional.user_id).eq("active", true),
-    supabase.from("schedule_blocks").select("starts_at,ends_at").eq("psychologist_id", professional.user_id).eq("active", true).lt("starts_at", to.toISOString()).gt("ends_at", from.toISOString()),
-    supabase.from("appointments").select("starts_at,ends_at").eq("psychologist_id", professional.user_id).in("status", ["RESERVADO_TEMPORARIAMENTE", "AGUARDANDO_SINAL", "CONFIRMADO"]).lt("starts_at", to.toISOString()).gt("ends_at", from.toISOString()),
+  const [rulesResult, blocksResult, appointmentsResult] = await Promise.all([
+    admin.from("availability_rules").select("weekday,starts_at,ends_at,valid_from,valid_until").eq("psychologist_id", professional.user_id).eq("active", true),
+    admin.from("schedule_blocks").select("starts_at,ends_at").eq("psychologist_id", professional.user_id).eq("active", true).lt("starts_at", to.toISOString()).gt("ends_at", from.toISOString()),
+    admin.from("appointments").select("starts_at,ends_at").eq("psychologist_id", professional.user_id).in("status", ["RESERVADO_TEMPORARIAMENTE", "AGUARDANDO_SINAL", "CONFIRMADO"]).lt("starts_at", to.toISOString()).gt("ends_at", from.toISOString()),
   ]);
-  const busy = [...(blocks ?? []), ...(appointments ?? [])].map((item) => ({ start: new Date(item.starts_at), end: new Date(item.ends_at) }));
-  const slots: { startsAt: string; endsAt: string }[] = [];
-  for (let day = new Date(from); day <= to; day = addDays(day, 1)) {
-    const dayKey = format(day, "yyyy-MM-dd");
-    for (const rule of rules ?? []) {
-      if (day.getDay() !== rule.weekday || dayKey < rule.valid_from || (rule.valid_until && dayKey > rule.valid_until)) continue;
-      const [startHour, startMinute] = rule.starts_at.split(":").map(Number);
-      const [endHour, endMinute] = rule.ends_at.split(":").map(Number);
-      const start = new Date(`${dayKey}T${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(2, "0")}:00-03:00`);
-      const end = new Date(`${dayKey}T${String(endHour).padStart(2, "0")}:${String(endMinute).padStart(2, "0")}:00-03:00`);
-      const duration = rule.session_duration_minutes ?? professional.session_duration_minutes;
-      for (let cursor = start; addMinutes(cursor, duration) <= end; cursor = addMinutes(cursor, duration)) {
-        const candidateEnd = addMinutes(cursor, duration);
-        if (cursor > new Date() && !busy.some((item) => cursor < item.end && candidateEnd > item.start)) {
-          slots.push({ startsAt: cursor.toISOString(), endsAt: candidateEnd.toISOString() });
-        }
+  if (rulesResult.error || blocksResult.error || appointmentsResult.error) return jsonError("Não foi possível consultar os horários. Tente novamente.", 503);
+  const busy = [...(blocksResult.data ?? []), ...(appointmentsResult.data ?? [])];
+  const slots = new Map<string, { startsAt: string; endsAt: string }>();
+  const localDate = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(from);
+  for (let day = new Date(localDate + "T12:00:00Z"); day.getTime() <= to.getTime() + 86400000; day = new Date(day.getTime() + 86400000)) {
+    const key = day.toISOString().slice(0, 10);
+    for (const rule of rulesResult.data ?? []) {
+      if (day.getUTCDay() !== rule.weekday || key < rule.valid_from || (rule.valid_until && key > rule.valid_until)) continue;
+      const end = new Date(key + "T" + rule.ends_at + "-03:00").getTime();
+      for (let cursor = new Date(key + "T" + rule.starts_at + "-03:00").getTime(); cursor + duration * 60000 <= end; cursor += duration * 60000) {
+        const finish = cursor + duration * 60000;
+        if (cursor <= now.getTime() || cursor < from.getTime() || finish > to.getTime() || busy.some((item) => cursor < new Date(item.ends_at).getTime() && finish > new Date(item.starts_at).getTime())) continue;
+        const startsAt = new Date(cursor).toISOString();
+        slots.set(startsAt, { startsAt, endsAt: new Date(finish).toISOString() });
       }
     }
   }
-  const bookingEnabled = env.PAYMENT_PROVIDER_MODE !== "fake" && Boolean(env.MERCADO_PAGO_ACCESS_TOKEN);
-  const { data: configuration } = await supabase.from("psychologist_profiles").select("deposit_amount").eq("user_id", professional.user_id).single();
-  return Response.json({ slots, sessionDurationMinutes: professional.session_duration_minutes, depositAmount: Number(configuration?.deposit_amount ?? 0), bookingEnabled }, { headers: { "Cache-Control": "private, no-store" } });
+  return Response.json({ slots: [...slots.values()].sort((a,b) => a.startsAt.localeCompare(b.startsAt)), sessionDurationMinutes: duration, sessionPrice: price, depositAmount: deposit, bookingEnabled: true }, { headers: { "Cache-Control": "private, no-store" } });
 }

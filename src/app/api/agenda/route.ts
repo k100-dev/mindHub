@@ -37,11 +37,8 @@ export async function POST(request: Request) {
       admin.from("psychologist_profiles").select("session_duration_minutes").eq("user_id", auth.user.id).single(),
     ]);
     if (!relationship || !professional) return jsonError("Paciente ativo não encontrado.", 404);
-    const startsAt = new Date(input.startsAt); const endsAt = new Date(startsAt.getTime() + professional.session_duration_minutes * 60000);
-    if (startsAt <= new Date()) return jsonError("Escolha um horário futuro.", 422);
-    const { data, error } = await admin.from("appointments").insert({ psychologist_id: auth.user.id, patient_id: input.patientId, starts_at: startsAt.toISOString(), ends_at: endsAt.toISOString(), status: "CONFIRMADO", origin: "PSYCHOLOGIST_PANEL" }).select("id,patient_id,starts_at,ends_at,status,origin").single();
-    if (error) return jsonError(error.code === "23P01" ? "Este horário já está ocupado." : "Não foi possível criar o agendamento.", error.code === "23P01" ? 409 : 500);
-    await admin.from("appointment_events").insert({ appointment_id: data.id, actor_id: auth.user.id, new_status: "CONFIRMADO", reason: "Agendamento criado pela profissional" });
+    const { data, error } = await admin.rpc("create_appointment_hold_for_patient", { requested_patient_id: input.patientId, requested_psychologist_id: auth.user.id, requested_starts_at: input.startsAt });
+    if (error) return jsonError(/SLOT_CONFLICT|UNAVAILABLE_SLOT|BLOCKED_SLOT/.test(error.message) ? "Horário indisponível. Confira a disponibilidade e os bloqueios." : "Não foi possível criar o agendamento.", 409);
     return Response.json({ appointment: data }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) return jsonError("Dados inválidos.", 422, error.flatten());

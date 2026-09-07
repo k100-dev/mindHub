@@ -20,9 +20,9 @@ export const blockingStatuses: AppointmentStatus[] = [
 ];
 
 const transitions: Record<AppointmentStatus, AppointmentStatus[]> = {
-  RESERVADO_TEMPORARIAMENTE: ["AGUARDANDO_SINAL", "EXPIRADO", "CANCELADO"],
-  AGUARDANDO_SINAL: ["CONFIRMADO", "EXPIRADO", "CANCELADO"],
-  CONFIRMADO: ["REALIZADO", "CANCELADO", "REMARCADO", "NO_SHOW"],
+  RESERVADO_TEMPORARIAMENTE: ["AGUARDANDO_SINAL", "CONFIRMADO", "CANCELADO"],
+  AGUARDANDO_SINAL: ["CONFIRMADO", "CANCELADO"],
+  CONFIRMADO: ["REALIZADO", "CANCELADO", "AGUARDANDO_SINAL", "NO_SHOW"],
   REALIZADO: [],
   CANCELADO: [],
   REMARCADO: [],
@@ -32,10 +32,6 @@ const transitions: Record<AppointmentStatus, AppointmentStatus[]> = {
 
 export function canTransition(from: AppointmentStatus, to: AppointmentStatus) {
   return transitions[from].includes(to);
-}
-
-export function createHoldExpiration(now = new Date(), minutes = 15) {
-  return addMinutes(now, minutes);
 }
 
 export type TimeInterval = { start: Date; end: Date };

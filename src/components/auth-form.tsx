@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { PasswordField } from "@/components/password-field";
 import { LoaderCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/browser";
 import { destinationForRole } from "@/lib/routes";
@@ -16,6 +17,7 @@ export function LoginForm({ next }: { next?: string }) {
     const form = new FormData(event.currentTarget);
     const client = createClient();
     if (!client) { setMessage("O acesso está temporariamente indisponível."); setLoading(false); return; }
+    try {
     const { error } = await client.auth.signInWithPassword({ email: String(form.get("email")), password: String(form.get("password")) });
     if (error) { setMessage("E-mail ou senha inválidos."); setLoading(false); return; }
     const response = await fetch("/api/me", { cache: "no-store" });
@@ -28,12 +30,14 @@ export function LoginForm({ next }: { next?: string }) {
     }
     const destination = destinationForRole(body.profile.role, next);
     router.replace(destination); router.refresh();
+    } catch { setMessage("Não foi possível conectar. Confira sua conexão e tente novamente."); }
+    finally { setLoading(false); }
   }
 
   return (
     <form onSubmit={submit} className="mt-7 grid gap-4">
       <label className="grid gap-2 text-sm font-bold">E-mail<input className="field" name="email" type="email" autoComplete="email" required placeholder="seu@email.com" /></label>
-      <label className="grid gap-2 text-sm font-bold">Senha<input className="field" name="password" type="password" autoComplete="current-password" required minLength={10} /></label>
+      <PasswordField autoComplete="current-password" minLength={1} />
       {message && <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{message}</p>}
       <button className="button-primary mt-1 w-full" disabled={loading}>{loading && <LoaderCircle size={18} className="animate-spin" />}{loading ? "Entrando…" : "Entrar"}</button>
     </form>
@@ -49,13 +53,14 @@ export function RegistrationForm({ next }: { next?: string }) {
     event.preventDefault(); setLoading(true); setMessage("");
     const form = new FormData(event.currentTarget);
     const payload = {
-      name: String(form.get("name")), email: String(form.get("email")), password: String(form.get("password")), phone: String(form.get("phone")), next,
+      name: String(form.get("name")), email: String(form.get("email")), password: String(form.get("password")), phone: String(form.get("phone")), confirmation: String(form.get("confirmation")), next,
     };
+    if (payload.password !== payload.confirmation) { setMessage("As senhas não coincidem. Confira os dois campos."); setLoading(false); return; }
     try {
       const response = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const body = await response.json();
       if (!response.ok) throw new Error(body.error?.message ?? "Não foi possível criar a conta.");
-      setSuccess(true); setMessage("Conta criada. Confira seu e-mail para confirmar o acesso.");
+      setSuccess(true); setMessage(body.requiresEmailConfirmation ? "Conta criada. Confira seu e-mail para confirmar o acesso." : "Conta criada. Você já pode entrar com seu e-mail e senha.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Não foi possível criar a conta."); }
     finally { setLoading(false); }
   }
@@ -65,8 +70,8 @@ export function RegistrationForm({ next }: { next?: string }) {
   return (
     <form onSubmit={submit} className="mt-7 grid gap-4">
       <label className="grid gap-2 text-sm font-bold">Nome completo<input className="field" name="name" required minLength={3} autoComplete="name" /></label>
-      <div className="grid gap-4 sm:grid-cols-2"><label className="grid gap-2 text-sm font-bold">E-mail<input className="field" name="email" type="email" required autoComplete="email" /></label><label className="grid gap-2 text-sm font-bold">WhatsApp<input className="field" name="phone" required placeholder="+5511999999999" autoComplete="tel" /></label></div>
-      <label className="grid gap-2 text-sm font-bold">Senha<input className="field" name="password" type="password" required minLength={10} autoComplete="new-password" /><span className="muted text-xs font-normal">Mínimo de 10 caracteres.</span></label>
+      <div className="grid gap-4 sm:grid-cols-2"><label className="grid gap-2 text-sm font-bold">E-mail<input className="field" name="email" type="email" required autoComplete="email" /></label><label className="grid gap-2 text-sm font-bold">Telefone<input className="field" name="phone" required type="tel" placeholder="(43) 99999-9999" autoComplete="tel" /></label></div>
+      <PasswordField /><p className="muted -mt-2 text-xs">Use entre 10 e 72 caracteres.</p><PasswordField name="confirmation" label="Confirmar senha" />
       {message && <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-900">{message}</p>}
       <button className="button-primary mt-1 w-full" disabled={loading}>{loading && <LoaderCircle size={18} className="animate-spin" />}{loading ? "Criando conta…" : "Criar conta"}</button>
     </form>
@@ -75,13 +80,19 @@ export function RegistrationForm({ next }: { next?: string }) {
 
 export function RecoveryForm() {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); const client = createClient();
-    if (!client) { setMessage("Configure o Supabase para enviar o e-mail de recuperação."); return; }
-    await client.auth.resetPasswordForEmail(String(form.get("email")), { redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent("/auth/atualizar-senha")}` });
+    if (!client) { setMessage("O acesso está temporariamente indisponível. Tente novamente em instantes."); return; }
+    setLoading(true); setMessage("");
+    try {
+    const { error } = await client.auth.resetPasswordForEmail(String(form.get("email")), { redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent("/auth/atualizar-senha")}` });
+    if (error) throw error;
     setMessage("Se o e-mail existir, enviaremos as instruções de recuperação.");
+    } catch { setMessage("Não foi possível enviar agora. Tente novamente em instantes."); }
+    finally { setLoading(false); }
   }
-  return <form onSubmit={submit} className="mt-7 grid gap-4"><label className="grid gap-2 text-sm font-bold">E-mail<input className="field" name="email" type="email" required /></label>{message && <p className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">{message}</p>}<button className="button-primary w-full">Enviar instruções</button></form>;
+  return <form onSubmit={submit} className="mt-7 grid gap-4"><label className="grid gap-2 text-sm font-bold">E-mail<input className="field" name="email" type="email" required /></label>{message && <p className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">{message}</p>}<button className="button-primary w-full" disabled={loading}>{loading ? "Enviando…" : "Enviar instruções"}</button></form>;
 }
 
 export function UpdatePasswordForm() {
@@ -99,10 +110,12 @@ export function UpdatePasswordForm() {
     }
     const client = createClient();
     if (!client) { setMessage("O acesso está temporariamente indisponível."); setLoading(false); return; }
+    try {
     const { error } = await client.auth.updateUser({ password });
     if (error) setMessage("O link expirou ou não foi possível atualizar a senha.");
     else { setDone(true); setMessage("Senha atualizada. Você já pode entrar."); }
-    setLoading(false);
+    } catch { setMessage("Não foi possível conectar. Tente novamente."); }
+    finally { setLoading(false); }
   }
-  return <form onSubmit={submit} className="mt-7 grid gap-4"><label className="grid gap-2 text-sm font-bold">Nova senha<input className="field" name="password" type="password" minLength={10} required autoComplete="new-password" /></label><label className="grid gap-2 text-sm font-bold">Confirmar senha<input className="field" name="confirmation" type="password" minLength={10} required autoComplete="new-password" /></label>{message && <p role="status" className={`rounded-xl p-3 text-sm ${done ? "bg-emerald-50 text-emerald-900" : "bg-amber-50 text-amber-900"}`}>{message}</p>}<button className="button-primary w-full" disabled={loading || done}>{loading ? "Atualizando…" : done ? "Senha atualizada" : "Atualizar senha"}</button></form>;
+  return <form onSubmit={submit} className="mt-7 grid gap-4"><PasswordField label="Nova senha" /><PasswordField name="confirmation" label="Confirmar senha" />{message && <p role="status" className={`rounded-xl p-3 text-sm ${done ? "bg-emerald-50 text-emerald-900" : "bg-amber-50 text-amber-900"}`}>{message}</p>}<button className="button-primary w-full" disabled={loading || done}>{loading ? "Atualizando…" : done ? "Senha atualizada" : "Atualizar senha"}</button></form>;
 }

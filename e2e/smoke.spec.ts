@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("página pública é exclusiva de Isadora e não expõe agenda", async ({ page }) => {
+test("página pública apresenta o produto e protege a agenda", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /seu horário, com clareza e privacidade/i })).toBeVisible();
-  await expect(page.getByText(/atendimento com Isadora Bezerra/i).first()).toBeVisible();
+  await expect(page.getByText(/sua agenda de cuidado/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /agendar atendimento/i })).toHaveAttribute("href", /cadastro\/paciente\?next=/);
   await expect(page.getByText(/CRP|São Paulo|psicologia clínica|horários disponíveis|demonstração|MVP/i)).toHaveCount(0);
   await expect(page.locator("img, svg[role=img]")).toHaveCount(0);
@@ -37,10 +37,10 @@ test("cadastro de paciente e recuperação têm os campos necessários", async (
   await page.goto("/cadastro/paciente");
   await expect(page.getByLabel(/nome completo/i)).toBeVisible();
   await expect(page.getByLabel(/^e-mail$/i)).toBeVisible();
-  await expect(page.getByLabel(/whatsapp/i)).toBeVisible();
+  await expect(page.getByLabel(/^telefone$/i)).toBeVisible();
   await page.goto("/auth/atualizar-senha");
-  await expect(page.getByLabel(/nova senha/i)).toBeVisible();
-  await expect(page.getByLabel(/confirmar senha/i)).toBeVisible();
+  await expect(page.getByLabel(/^nova senha$/i)).toBeVisible();
+  await expect(page.getByLabel(/^confirmar senha$/i)).toBeVisible();
 });
 
 test("layout não cria rolagem horizontal, inclusive com texto ampliado", async ({ page }) => {

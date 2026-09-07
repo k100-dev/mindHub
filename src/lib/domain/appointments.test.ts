@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   canTransition,
-  createHoldExpiration,
   generateSlots,
   hasConflict,
 } from "./appointments";
@@ -10,11 +9,6 @@ describe("regras de agendamento", () => {
   it("aceita somente transições previstas", () => {
     expect(canTransition("AGUARDANDO_SINAL", "CONFIRMADO")).toBe(true);
     expect(canTransition("REALIZADO", "CONFIRMADO")).toBe(false);
-  });
-
-  it("cria reserva temporária de 15 minutos", () => {
-    const now = new Date("2026-08-22T12:00:00Z");
-    expect(createHoldExpiration(now).toISOString()).toBe("2026-08-22T12:15:00.000Z");
   });
 
   it("detecta sobreposição sem bloquear intervalos adjacentes", () => {

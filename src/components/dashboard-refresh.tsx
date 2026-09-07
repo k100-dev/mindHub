@@ -1,0 +1,13 @@
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+export function DashboardRefresh() {
+  const router = useRouter();
+  useEffect(() => {
+    const refresh = () => { if (document.visibilityState === "visible") router.refresh(); };
+    const timer = setInterval(refresh, 30000);
+    window.addEventListener("focus", refresh);
+    return () => { clearInterval(timer); window.removeEventListener("focus", refresh); };
+  }, [router]);
+  return <p className="muted text-xs">Atualização automática a cada 30 segundos.</p>;
+}

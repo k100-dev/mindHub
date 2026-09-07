@@ -1,28 +1,24 @@
 # MindHub
 
-O MindHub é o sistema administrativo exclusivo da psicóloga Isadora Bezerra. Não é uma plataforma para múltiplos profissionais e não oferece cadastro público de psicóloga.
+Ferramenta de organização de atendimentos psicológicos, com acesso próprio para pacientes e profissional.
 
-## Pessoas e acessos
+## Linguagem
 
-**Visitante**: pode conhecer o espaço e criar ou acessar uma conta de paciente. Não vê disponibilidade, bloqueios ou agendamentos.
+**Profissional**: psicóloga responsável pela agenda e pela confirmação dos atendimentos. Isadora Bezerra é a profissional desta implantação.
 
-**Paciente ativo**: pessoa autenticada com perfil `PATIENT` e conta `ACTIVE`. Pode consultar os horários liberados por Isadora, solicitar um agendamento e visualizar somente seus próprios registros administrativos.
+**Paciente**: pessoa atendida pela profissional, com acesso aos próprios agendamentos.
 
-**Isadora Bezerra**: única profissional autorizada. O acesso exige, ao mesmo tempo, e-mail presente em `PSYCHOLOGIST_ALLOWLIST`, perfil `PSYCHOLOGIST/ACTIVE` e perfil profissional `VERIFIED` com slug `dra-isadora-bezerra`.
+**Agendamento pendente**: solicitação que já ocupa o horário e aguarda a confirmação manual da profissional. Não expira automaticamente.
+_Evitar_: reserva temporária, pagamento confirmado.
 
-## Linguagem do domínio
+**Agendamento confirmado**: atendimento confirmado pela profissional após conferir o sinal e entrar em contato com o paciente.
 
-**Agendamento** é o compromisso administrativo entre Isadora e um paciente.
+**Sinal**: parcela antecipada do preço da sessão, recebida fora da plataforma e registrada pela profissional.
 
-**Reserva temporária** ocupa um horário durante a etapa de confirmação. Não equivale a agendamento confirmado.
+**Remarcação**: mudança de horário do mesmo agendamento, conservando os valores pagos e retornando à condição pendente.
 
-**Sinal** é o pagamento configurado por Isadora para confirmar um agendamento. O retorno do navegador nunca confirma pagamento; somente o webhook autenticado do provedor pode fazê-lo.
+**Reembolso pendente**: valor a devolver manualmente após cancelamento elegível. O registro de conclusão representa a devolução já realizada pela profissional.
 
-**Bloqueio de agenda** torna um intervalo indisponível. Seu motivo administrativo é privado e nunca é enviado ao paciente.
+**Bloqueio de agenda**: intervalo indisponível por decisão da profissional, cujo motivo é privado.
 
-**Observação administrativa** contém apenas informação operacional sobre o atendimento. Diagnóstico, evolução, anamnese, prescrição e conteúdo de sessão são informação clínica e estão fora do MindHub.
-
-## Fonte de verdade
-
-Supabase Auth identifica a sessão. A autorização usa exclusivamente `profiles`, `patient_profiles` e `psychologist_profiles`; `user_metadata` serve apenas como entrada inicial de nome e telefone e nunca decide papel ou permissão. PostgreSQL, RLS e as migrações em `supabase/migrations` são a fonte executável dos dados.
-
+**Observação administrativa**: anotação sobre a organização do atendimento, sem conteúdo clínico.

@@ -13,7 +13,7 @@ export function destinationForRole(role: "PATIENT" | "PSYCHOLOGIST", requested?:
   const fallback = role === "PATIENT" ? "/hub" : "/app";
   const next = safeInternalPath(requested, fallback);
   const allowed = role === "PATIENT"
-    ? next === "/hub" || next.startsWith("/hub/") || /^\/p\/dra-isadora-bezerra\/horarios(?:[?#]|$)/.test(next)
+    ? next === "/hub" || next.startsWith("/hub/") || /^\/p\/[a-z0-9-]+\/horarios(?:[?#]|$)/.test(next)
     : next === "/app" || next.startsWith("/app/");
   return allowed ? next : fallback;
 }
