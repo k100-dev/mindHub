@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     if (!admin) return jsonError("Supabase administrativo não configurado.", 503);
     const input = patientSchema.parse(await request.json());
     const { data: created, error: authError } = await admin.auth.admin.inviteUserByEmail(input.email, {
-      redirectTo: `${new URL(request.url).origin}/auth/callback`,
+      redirectTo: `${new URL(request.url).origin}/auth/atualizar-senha`,
       data: { role: "PATIENT", name: input.name, phone: input.phone, invited: true },
     });
     if (authError || !created.user) return jsonError("E-mail já cadastrado ou inválido.", 409);

@@ -26,3 +26,7 @@ Após cancelamento elegível, o dashboard destaca o reembolso. Realize a devolu�
 ## Recuperação
 
 Use Esqueci minha senha na entrada. O link abre a definição de uma nova senha e confirmação. Se houver indisponibilidade de conexão ou envio, a tela informa o problema e permite tentar novamente.
+
+## Configuração de acesso pendente
+
+A URL de retorno do Supabase precisa apontar para o domínio publicado. O teste de convite identificou retorno incorreto para localhost. Corrigir Authentication > URL Configuration conforme `VALIDACAO-BANCA.md` e retestar antes de convidar pacientes reais.

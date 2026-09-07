@@ -16,3 +16,11 @@ Data: 06/09/2026. Dados sintéticos; usuários e reservas temporários removidos
 Os testes usam contas criadas administrativamente, confirmadas para não enviar e-mails. A entrega efetiva de mensagens de cadastro/recuperação na caixa de entrada não foi validada. O cadastro valida senhas e telefone no servidor e utiliza Supabase Auth. Não houve movimentação financeira real. Os testes não equivalem a homologação clínica, teste de carga ou garantia de ausência de defeitos.
 
 Disponibilidade real e dados Pix devem ser informados/configurados pela profissional antes de abrir a agenda a pacientes.
+
+## Atualização de 07/09/2026
+
+A versão hospedada e o endereço principal passaram no fluxo completo, incluindo edição, inativação, reativação e observação administrativa do paciente. Deploy validado: `6a9f0adf895c552691fbc730`, revisão `1a130b9`.
+
+**Pendência de configuração encontrada em teste:** o Supabase redireciona links de convite para `http://localhost:3000`, porque a URL do site e os retornos autorizados ainda precisam ser corrigidos no painel de autenticação. A configuração desejada está em `supabase/config.toml`, mas a alteração remota depende de login no painel, indisponível no conector desta sessão. Cadastro com confirmação, convite e recuperação por e-mail não devem ser considerados homologados enquanto essa correção e o reteste não forem concluídos. Login por senha e o ciclo de agenda foram aprovados.
+
+No painel Supabase, Authentication > URL Configuration: Site URL `https://themindhub.netlify.app`; Redirect URLs `https://themindhub.netlify.app/auth/callback` e `https://themindhub.netlify.app/auth/atualizar-senha`. Preservar endereços locais necessários ao desenvolvimento. O convite foi ajustado para abrir diretamente a definição de senha.

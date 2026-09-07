@@ -13,8 +13,8 @@ major_version = 17
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+site_url = "https://themindhub.netlify.app"
+additional_redirect_urls = ["https://themindhub.netlify.app/auth/callback", "https://themindhub.netlify.app/auth/atualizar-senha", "http://localhost:3000/auth/callback", "http://localhost:3000/auth/atualizar-senha"]
 enable_signup = true
 
 [auth.email]
