@@ -111,6 +111,14 @@ export function UpdatePasswordForm() {
     const client = createClient();
     if (!client) { setMessage("O acesso está temporariamente indisponível."); setLoading(false); return; }
     try {
+    // Administrative invitations use an implicit token pair; recovery uses PKCE.
+    const tokens = new URLSearchParams(location.hash.slice(1));
+    const accessToken = tokens.get("access_token"), refreshToken = tokens.get("refresh_token");
+    if (accessToken && refreshToken) {
+      const { error: sessionError } = await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      history.replaceState(null, "", location.pathname + location.search);
+      if (sessionError) { setMessage("O link expirou. Solicite um novo acesso."); return; }
+    }
     const { error } = await client.auth.updateUser({ password });
     if (error) setMessage("O link expirou ou não foi possível atualizar a senha.");
     else { setDone(true); setMessage("Senha atualizada. Você já pode entrar."); }
