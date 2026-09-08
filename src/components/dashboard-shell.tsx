@@ -32,7 +32,7 @@ export function DashboardShell({ children, name }: { children: React.ReactNode; 
     <div className="min-h-screen bg-[#f6f8f2] lg:grid lg:grid-cols-[250px_1fr]">
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#dfe7d8] bg-[#fffef9] px-4 py-3 lg:hidden"><Brand/><button className="grid size-11 place-items-center rounded-xl bg-[#315c42] text-white" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="professional-navigation" aria-label={open ? "Fechar menu" : "Abrir menu"}>{open ? <X /> : <Menu />}</button></header>
       {open && <button className="fixed inset-0 z-30 bg-slate-950/30 lg:hidden" aria-label="Fechar menu" onClick={() => setOpen(false)} />}
-      <aside className={cn("fixed bottom-0 left-0 top-[69px] z-40 flex w-[250px] overflow-y-auto lg:top-0 flex-col bg-[#244f3b] px-4 py-6 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0", open ? "translate-x-0" : "-translate-x-full")}>
+      <aside className={cn("fixed bottom-0 left-0 top-[69px] z-40 flex w-[250px] overflow-y-auto lg:top-0 flex-col bg-[#244f3b] px-4 py-6 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0", open ? "visible translate-x-0" : "invisible -translate-x-full lg:visible")}>
         <div className="px-2"><Brand inverse /></div>
         <p className="mt-3 px-2 text-xs tracking-wide text-white/60">Seu espaço de trabalho</p><nav id="professional-navigation" className="mt-8 grid gap-1.5" aria-label="Navegação principal">
           {items.map(({ href, label, icon: Icon, exact }) => {
