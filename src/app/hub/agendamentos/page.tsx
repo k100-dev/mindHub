@@ -5,5 +5,5 @@ import { getPatientArea } from "@/lib/page-data";
 export default async function PatientAppointmentsPage() {
   const data = await getPatientArea();
   if (!data) return null;
-  return <><PageHeading title="Meus encontros" description="Acompanhe seus próximos passos e os encontros que já fizeram parte do caminho." action={<Link href="/hub/agendar" className="button-primary">Agendar encontro</Link>}/><PatientAppointments appointments={data.appointments} now={new Date().getTime()}/></>;
+  return <><PageHeading title="Meus encontros" description="Consulte seus próximos horários e o histórico de agendamentos." action={<Link href="/hub/agendar" className="button-primary">Agendar encontro</Link>}/><PatientAppointments appointments={data.appointments} now={new Date().getTime()}/></>;
 }
