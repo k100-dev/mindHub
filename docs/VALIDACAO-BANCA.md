@@ -28,3 +28,11 @@ A URL do site e os retornos autorizados foram corrigidos no painel Supabase para
 Página inicial com identidade acolhedora e mensagem “Um tempo para você.”; acesso profissional identificado na navegação de entrada; navegação móvel do paciente; escolha de dia e horário; calendário profissional por dia, semana e mês; separação de próximos encontros e histórico; configurações agrupadas em contato, atendimento e apresentação.
 
 Os 30 testes públicos incluem os botões e links principais, abertura das perguntas frequentes, preservação do destino após login e ampliação do texto a 200%.
+
+## Publicação final do refinamento
+
+Commit `647a109`, publicado por Git na branch principal. O Netlify executou o build automático; deploy `6a9f5dba09d5720008f269b6` concluído. O fluxo completo foi repetido no domínio público com a conta profissional vinculada ao e-mail escolhido pelo responsável.
+
+Também aprovados no navegador: seleção do mês e dia, criação de atendimento pela profissional, alternância entre histórico e próximos encontros e navegação profissional nas cinco larguras. O retorno de recuperação com parâmetro `next` foi verificado no Supabase. As contas sintéticas foram removidas ao final.
+
+A definição da senha pessoal da profissional é realizada diretamente pelo responsável, sem compartilhamento de senha no chat.
