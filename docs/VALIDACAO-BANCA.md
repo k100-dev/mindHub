@@ -19,8 +19,12 @@ Disponibilidade real e dados Pix devem ser informados/configurados pela profissi
 
 ## Atualização de 07/09/2026
 
-A versão hospedada e o endereço principal passaram no fluxo completo, incluindo edição, inativação, reativação e observação administrativa do paciente. Deploy validado: `6a9f0adf895c552691fbc730`, revisão `1a130b9`.
+A versão publicada passou no ciclo completo de agenda, incluindo edição, inativação, reativação e observação administrativa do paciente.
 
-**Pendência de configuração encontrada em teste:** o Supabase redireciona links de convite para `http://localhost:3000`, porque a URL do site e os retornos autorizados ainda precisam ser corrigidos no painel de autenticação. A configuração desejada está em `supabase/config.toml`, mas a alteração remota depende de login no painel, indisponível no conector desta sessão. Cadastro com confirmação, convite e recuperação por e-mail não devem ser considerados homologados enquanto essa correção e o reteste não forem concluídos. Login por senha e o ciclo de agenda foram aprovados.
+A URL do site e os retornos autorizados foram corrigidos no painel Supabase para o domínio de produção. O teste de convite, gerado sem envio de e-mail, abriu a definição de senha no endereço correto, atualizou a senha e permitiu login. A revisão `1885de4` corrigiu o estabelecimento de sessão para convites. A entrega na caixa de entrada continua fora da evidência automatizada.
 
-No painel Supabase, Authentication > URL Configuration: Site URL `https://themindhub.netlify.app`; Redirect URLs `https://themindhub.netlify.app/auth/callback` e `https://themindhub.netlify.app/auth/atualizar-senha`. Preservar endereços locais necessários ao desenvolvimento. O convite foi ajustado para abrir diretamente a definição de senha.
+## Refinamento de experiência
+
+Página inicial com identidade acolhedora e mensagem “Um tempo para você.”; acesso profissional identificado na navegação de entrada; navegação móvel do paciente; escolha de dia e horário; calendário profissional por dia, semana e mês; separação de próximos encontros e histórico; configurações agrupadas em contato, atendimento e apresentação.
+
+Os 30 testes públicos incluem os botões e links principais, abertura das perguntas frequentes, preservação do destino após login e ampliação do texto a 200%.

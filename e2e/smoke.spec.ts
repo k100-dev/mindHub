@@ -2,11 +2,13 @@ import { expect, test } from "@playwright/test";
 
 test("página pública apresenta o produto e protege a agenda", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /seu horário, com clareza e privacidade/i })).toBeVisible();
-  await expect(page.getByText(/sua agenda de cuidado/i)).toBeVisible();
-  await expect(page.getByRole("link", { name: /agendar atendimento/i })).toHaveAttribute("href", /cadastro\/paciente\?next=/);
-  await expect(page.getByText(/CRP|São Paulo|psicologia clínica|horários disponíveis|demonstração|MVP/i)).toHaveCount(0);
-  await expect(page.locator("img, svg[role=img]")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /um tempo\s*para você/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /encontrar meu horário/i })).toHaveAttribute("href", "/hub/agendar");
+  await expect(page.getByRole("link", { name: /acesso profissional/i })).toHaveAttribute("href", "/entrar?next=/app");
+  await page.getByText("Como meu horário é confirmado?", { exact: true }).click();
+  await expect(page.getByText(/ao solicitar, o horário já fica reservado/i)).toBeVisible();
+  await page.getByRole("link", { name: /encontrar meu horário/i }).click();
+  await expect(page).toHaveURL(/\/entrar\?next=(%2F|\/)hub(%2F|\/)agendar/);
 });
 
 test("perfil público direciona ao acesso sem renderizar slots", async ({ page }) => {
@@ -47,6 +49,6 @@ test("layout não cria rolagem horizontal, inclusive com texto ampliado", async 
   await page.goto("/");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-  await expect(page.getByRole("heading", { name: /seu horário, com clareza e privacidade/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /um tempo\s*para você/i })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

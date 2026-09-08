@@ -27,6 +27,12 @@ Após cancelamento elegível, o dashboard destaca o reembolso. Realize a devolu�
 
 Use Esqueci minha senha na entrada. O link abre a definição de uma nova senha e confirmação. Se houver indisponibilidade de conexão ou envio, a tela informa o problema e permite tentar novamente.
 
-## Configuração de acesso pendente
+## Acesso e navegação
 
-A URL de retorno do Supabase precisa apontar para o domínio publicado. O teste de convite identificou retorno incorreto para localhost. Corrigir Authentication > URL Configuration conforme `VALIDACAO-BANCA.md` e retestar antes de convidar pacientes reais.
+Na página inicial, use Acesso profissional para abrir a entrada da psicóloga. Pacientes usam Entrar ou Encontrar meu horário; o destino escolhido é preservado após autenticação.
+
+Em Agenda, selecione Dia, Semana ou Mês. Clique em um dia do mês para abrir seus atendimentos. O formulário lateral permite escolher paciente ativo, data e um horário disponível. A confirmação continua sendo realizada na página do atendimento, após conferir o sinal.
+
+O paciente encontra Próximos encontros e Histórico em Meus encontros. Seu perfil permite atualizar nome e telefone. As configurações profissionais separam dados de contato, duração e valores do atendimento e apresentação.
+
+O retorno do Supabase foi configurado para o domínio publicado. Convite com definição de senha foi testado sem envio de mensagem; a entrega de e-mails precisa ser acompanhada na operação.

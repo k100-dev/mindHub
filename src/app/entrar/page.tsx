@@ -1,10 +1,5 @@
 import Link from "next/link";
 import { AuthShell } from "@/components/auth-shell";
 import { LoginForm } from "@/components/auth-form";
-
-export const metadata = { title: "Entrar" };
-export default async function LoginPage({ searchParams }: PageProps<"/entrar">) {
-  const { next } = await searchParams;
-  const requested = typeof next === "string" ? next : undefined;
-  return <AuthShell title="Acesse sua conta" subtitle="Entre para ver sua agenda." footer={<><Link href="/recuperar-senha" className="font-bold text-[#117f72]">Esqueci minha senha</Link><span className="mx-2 text-slate-300">·</span><Link href={`/cadastro/paciente${requested ? `?next=${encodeURIComponent(requested)}` : ""}`} className="font-bold text-[#117f72]">Criar conta</Link></>}><LoginForm next={requested} /></AuthShell>;
-}
+export const metadata={title:"Entrar"};
+export default async function LoginPage({searchParams}:PageProps<"/entrar">){const {next}=await searchParams;const requested=typeof next==="string"?next:undefined;const professional=!!requested?.startsWith('/app');return <AuthShell professional={professional} title={professional?"Bem-vinda ao seu dia.":"Que bom ter você aqui."} subtitle={professional?"Entre com a conta profissional para acompanhar sua agenda e seus pacientes.":"Entre para acompanhar seus encontros e escolher um tempo para você."} footer={<><Link href="/recuperar-senha" className="text-link">Esqueci minha senha</Link>{!professional&&<><span className="mx-2 text-slate-300">·</span><Link href={`/cadastro/paciente${requested?`?next=${encodeURIComponent(requested)}`:""}`} className="text-link">Criar minha conta</Link></>}<div className="mt-3"><Link href={professional?'/entrar':'/entrar?next=/app'} className="text-sm text-[#6c7b70] underline underline-offset-4">{professional?'Sou paciente':'Acessar como profissional'}</Link></div></>}><LoginForm next={requested}/></AuthShell>}

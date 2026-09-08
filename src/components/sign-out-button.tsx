@@ -10,5 +10,5 @@ export function SignOutButton({ compact = false }: { compact?: boolean }) {
     await createClient()?.auth.signOut();
     router.replace("/"); router.refresh();
   }
-  return <button type="button" onClick={signOut} className={compact ? "grid size-10 place-items-center rounded-xl text-white/80 hover:bg-white/10" : "button-secondary"} aria-label="Sair da conta"><LogOut size={18} />{!compact && "Sair"}</button>;
+  return <button type="button" onClick={signOut} className={compact ? "grid size-10 place-items-center rounded-xl text-current hover:bg-black/5" : "button-secondary"} aria-label="Sair da conta"><LogOut size={18} />{!compact && "Sair"}</button>;
 }

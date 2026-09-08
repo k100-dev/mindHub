@@ -37,3 +37,65 @@ main, section, article, aside, form, fieldset, label { min-width: 0; }
 .button-secondary:disabled { cursor: not-allowed; opacity: .6; }
 p, h1, h2, h3, dd { overflow-wrap: anywhere; }
 @media (max-width: 640px) { .field { font-size: 16px; } .button-primary, .button-secondary { padding: 10px 14px; } }
+
+/* Shared rhythm, motion and the patient-facing identity. */
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body { font-family: "Segoe UI", Arial, sans-serif; }
+button, a, summary { touch-action: manipulation; }
+button, input, select, textarea, .card, .text-link { transition: background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
+.button-primary:active, .button-secondary:active { transform: translateY(1px); }
+.button-secondary:hover { background: #f0f6f2; border-color: #8ba99b; }
+.field:hover:not(:focus) { border-color: #91afa3; }
+.card { box-shadow: 0 6px 26px #173d2c06; }
+.public-home { background: #fafbf7; color: #253d32; }
+.public-container { width: min(1180px, 100% - 48px); margin-inline: auto; }
+.public-header { position: sticky; top: 0; z-index: 30; background: #fafbf7eb; backdrop-filter: blur(18px); border-bottom: 1px solid #e5e9df; }
+.nav-link { color: #64756b; transition: color .2s; }
+.nav-link:hover { color: #1d5140; }
+.hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 70px; padding-block: 65px 100px; }
+.soft-kicker { display: inline-flex; align-items: center; gap: 10px; border: 1px solid #dbe6d9; background: #f1f5ec; color: #58724e; border-radius: 99px; padding: 8px 13px; font-size: 13px; }
+.display-title { font-family: Georgia, "Times New Roman", serif; font-size: clamp(64px, 7.5vw, 100px); font-weight: 400; line-height: 1.02; letter-spacing: -.055em; }
+.display-title em { font-weight: 400; color: #65815b; }
+.hero-description { max-width: 450px; margin-top: 28px; font-size: 18px; line-height: 1.8; color: #64756b; }
+.text-link { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; color: #315f4a; text-underline-offset: 5px; }
+.text-link:hover { text-decoration: underline; }
+.hero-visual { position: relative; padding-bottom: 25px; }
+.hero-photo { width: 100%; height: 555px; object-fit: cover; border-radius: 160px 160px 24px 24px; }
+.hero-note { position: absolute; bottom: 15px; left: -42px; display: flex; align-items: center; gap: 15px; max-width: 95%; background: #fffef9f5; padding: 20px 23px; border: 1px solid #fff; border-radius: 17px; box-shadow: 0 12px 40px #1c382219; }
+.hero-note-mark { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; background: #edf2e6; border-radius: 50%; color: #57734f; font-family: Georgia,serif; font-style: italic; font-size: 30px; }
+.hero-image-caption { position: absolute; bottom: -14px; right: 3px; font-size: 12px; color: #7f8b7c; }
+.journey-section { padding-block: 75px; background: #eef2e9; border-block: 1px solid #e2e8db; }
+.section-title { font-family: Georgia,serif; font-weight: 400; font-size: clamp(32px,4vw,45px); line-height: 1.18; letter-spacing: -.035em; }
+.journey-card { padding: 28px; border: 1px solid #dfe6d7; border-radius: 20px; background: #fafcf6; }
+.journey-card:hover { border-color: #acc0a5; transform: translateY(-4px); }
+.faq-item { border-bottom: 1px solid #dfe6da; }
+.faq-item summary { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 23px 0; font-weight: 600; list-style: none; }
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary svg { flex-shrink: 0; transition: transform .2s; }
+.faq-item[open] summary svg { transform: rotate(45deg); }
+.faq-item p { padding-bottom: 24px; color: #64756b; line-height: 1.8; }
+.invitation-banner { border-radius: 24px; background: #244f3b; color: white; padding: 44px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+.patient-space { background: #f6f8f2; }
+.patient-space h1 { font-family: Georgia,serif; font-weight: 400; color: #294837; }
+.patient-nav-link { padding: 10px 16px; border-radius: 99px; color: #6b7c70; font-size: 14px; font-weight: 600; }
+.patient-nav-link[aria-current], .patient-nav-link:hover { background: #e8f0e3; color: #315c42; }
+.patient-bottom-nav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-around; background: #fffef9f5; backdrop-filter: blur(15px); border-top: 1px solid #dfe7db; padding: 11px 8px max(11px,env(safe-area-inset-bottom)); }
+.patient-bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:5px; color:#79877d; font-size:12px; padding:4px 13px; border-radius:12px; }
+.patient-bottom-nav a[aria-current] { color:#285b3e; background:#eaf1e4; }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page-enter, .reveal { animation: enter .5s ease-out both; }
+@media(min-width:768px) { .patient-bottom-nav { display:none; } }
+@media(max-width:900px) { .hero-grid { gap:35px; } .hero-photo { height:490px; } .hero-note { left:-20px; } }
+@media(max-width:767px) { .public-container { width:calc(100% - 40px); } .hero-grid { grid-template-columns:1fr; padding-block:45px 65px; gap:40px; } .hero-photo { height:420px; border-radius:120px 120px 20px 20px; } .hero-visual { max-width:480px; width:100%; margin-inline:auto; } .hero-note { left:10px; padding:16px; } .hero-description { font-size:17px; } .journey-section { padding-block:55px; } .invitation-banner { padding:30px; flex-direction:column; align-items:start; } .public-home h1 { overflow-wrap:normal; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *, *::before, *::after { animation:none!important; transition:none!important; } }
+.calendar-day { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:81px; border:1px solid #e0e7d9; border-radius:13px; background:#fff; color:#536d49; cursor:pointer; }
+.calendar-day span { font-size:11px; text-transform:uppercase; }
+.calendar-day strong { font-size:20px; font-weight:600; }
+.calendar-day:disabled { color:#b6c0af; border-color:#eef1e9; background:#fafbf7; cursor:default; }
+.calendar-day:not(:disabled):hover { border-color:#7f9f6c; background:#f1f6eb; }
+.calendar-day.is-selected { background:#315c42; border-color:#315c42; color:white; }
+.available-dot { display:block; width:4px; height:4px; border-radius:50%; background:currentColor; }
+.slot-button { display:flex; align-items:center; justify-content:center; gap:5px; min-height:47px; border:1px solid #dce6d3; border-radius:11px; background:white; color:#57754b; font-weight:600; cursor:pointer; }
+.slot-button:hover { background:#eff5e8; border-color:#8ba477; }
+.slot-button.is-selected { background:#e7f0de; border-color:#668d4f; color:#385b2f; }
+@media(max-width:370px) { .calendar-day { min-height:73px; border-radius:9px; } .calendar-day strong { font-size:17px; } .calendar-day span { font-size:10px; } }

@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { PageHeading } from "@/components/page-heading";
-import { StatusBadge } from "@/components/status-badge";
+import { PatientAppointments } from "@/components/patient-appointments";
 import { getPatientArea } from "@/lib/page-data";
-export default async function PatientAppointmentsPage() { const data = await getPatientArea(); if (!data) return null; return <><PageHeading title="Meus agendamentos" description="Próximos horários e histórico administrativo." /><div className="grid gap-4">{data.appointments.map((item) => <Link key={item.id} href={`/hub/agendamentos/${item.id}`} className="card flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center"><div><p className="text-lg font-extrabold">{item.professionalName}</p><p className="muted mt-1 text-sm">{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(item.starts_at))}</p></div><StatusBadge status={item.status} /></Link>)}{!data.appointments.length && <div className="card p-8 text-center text-[#66758d]">Você ainda não possui agendamentos.</div>}</div></>; }
+export default async function PatientAppointmentsPage() {
+  const data = await getPatientArea();
+  if (!data) return null;
+  return <><PageHeading title="Meus encontros" description="Acompanhe seus próximos passos e os encontros que já fizeram parte do caminho." action={<Link href="/hub/agendar" className="button-primary">Agendar encontro</Link>}/><PatientAppointments appointments={data.appointments} now={new Date().getTime()}/></>;
+}
