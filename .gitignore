@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/mindhub/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +20,7 @@
 
 # next.js
 /.next/
+/mindhub/.next/
 /out/
 
 # production
